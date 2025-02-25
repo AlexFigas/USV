@@ -1,0 +1,7 @@
+var searchData=
+[
+  ['initinternalled_9',['initInternalLed',['../_utils_boards_8cpp.html#ad527b7c916c9847cfe059692aed4a8c7',1,'initInternalLed():&#160;UtilsBoards.cpp'],['../_utils_boards_8h.html#ad527b7c916c9847cfe059692aed4a8c7',1,'initInternalLed():&#160;UtilsBoards.cpp']]],
+  ['initwifi_10',['initWiFi',['../_utils_boards_8cpp.html#aa9daa51e7d913b984145d3f726379db8',1,'initWiFi(const char *ssid, const char *password, const bool resetIfNoWiFi, const bool blinkInternal, const char *hostName, Print &amp;pr):&#160;UtilsBoards.cpp'],['../_utils_boards_8cpp.html#ace8f3e23c6aa982e36ad32ae80880a96',1,'initWiFi(PtrWiFiMultiEntry creds, int sizeOfCreds, const bool resetIfNoWiFi, const bool blinkInternal, const char *hostName, Print &amp;pr):&#160;UtilsBoards.cpp'],['../_utils_boards_8h.html#abe7d1a076d69670d7a8a64aa9cdb4410',1,'initWiFi(const char *ssid, const char *password, const bool resetIfNoWiFi=true, const bool blinkInternal=false, const char *hostName=NULL, Print &amp;pr=Serial):&#160;UtilsBoards.cpp'],['../_utils_boards_8h.html#ae3137ff060235a99283e9268d64318f5',1,'initWiFi(PtrWiFiMultiEntry creds, int sizeOfCreds, const bool resetIfNoWiFi=true, const bool blinkInternal=false, const char *hostName=NULL, Print &amp;pr=Serial):&#160;UtilsBoards.cpp']]],
+  ['internalledoff_11',['internalLedOff',['../_utils_boards_8h.html#a49fa67a7356b4f28e4d727dddc2b78ca',1,'UtilsBoards.h']]],
+  ['internalledon_12',['internalLedOn',['../_utils_boards_8h.html#a5d20be41d69d07f28c9dc2466ef475e3',1,'UtilsBoards.h']]]
+];
