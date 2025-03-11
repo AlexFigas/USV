@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ESP32 IoT Power Status</title>
+		
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<link rel="icon" type="image/png" href="favicon.png"/>
+		
+		<link rel="stylesheet" type="text/css" href="style.css" charset="UTF-8" >
+		
+		<script type="text/javascript" src="status.js" charset="utf-8">
+		</script>
+	</head>
+
+	<body onLoad="updateValues()">
+		<h1>Status</h1>
+		
+		<table class="powerStatus">
+			<thead class="powerStatus">
+				<tr>
+					<th class="powerStatus header">Quantity</th>
+					<th colspan="2" class="powerStatus header">Value</th>
+				</tr>
+			</thead>
+            
+			<tfoot>
+				<tr>
+					<th class="powerStatus footer">Sensor</th>
+					<th class="powerStatus footer">PZEM 100A</th>
+				</tr>
+			</tfoot>
+			
+			<tbody>
+				<tr class="powerStatus">
+					<td class="powerStatus">Voltage (V)</td>
+					<td><span class="sensor"><div id="voltage">%VOLTAGE%</div></span></td>
+				</tr>
+								
+				<tr class="powerStatus">
+					<td class="powerStatus">Current (A)</td>
+					<td><span class="sensor"><div id="current">%CURRENT%</div></span></td>
+				</tr>
+				
+				<tr class="powerStatus">
+					<td class="powerStatus">Power (W)</td>
+					<td><span class="sensor"><div id="power">%POWER%</div></span></td>
+				</tr>
+				
+				<tr class="powerStatus">
+					<td class="powerStatus">Energy (kW/h)</td>
+					<td><span class="sensor"><div id="energy">%ENERGY%</div></span></td>
+				</tr>
+				
+				<tr class="powerStatus">
+					<td class="powerStatus">Frequency (Hz)</td>
+					<td><span class="sensor"><div id="frequency">%FREQUENCY%</div></span></td>
+				</tr>
+				
+				<tr class="powerStatus">
+					<td class="powerStatus">Power factor</td>
+					<td><span class="sensor"><div id="powerFactor">%POWER_FACTOR%</div></span></td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<br>
+		<h2>Server GMT+0 time <div id="time">%SERVER_TIME%</div></h2>
+		<br>
+		<a href="index.html">Home</a>
+	</body>
+</html>

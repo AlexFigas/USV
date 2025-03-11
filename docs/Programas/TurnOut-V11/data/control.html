@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+		<link rel="stylesheet" href="bootstrap.min.css">
+
+		<!--<link REL="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">-->
+		<link REL="stylesheet" href="font-awesome.css">
+
+		<link rel="stylesheet" href="railroad.css">
+
+		<script src="railroad.js"></script>
+
+		<link rel="icon" type="image/ico" href="favicon.ico"/>
+
+		<title>Model railroad control</title>
+	</head>
+
+	<body onLoad="initPage()">
+
+		<script type="text/javascript">
+		</script>
+
+		<div class="container">
+			<h2>Global Settings</h2>
+			<div class="panel panel-default myAlignment">
+				<div class="panel-heading">
+					<h3 class="panel-title">Global Settings</h3>
+				</div>
+
+				<div class="panel-body">
+					<div class="panel panel-default mySettings">
+						<details>
+							<summary>Global motion settings (Click to expand)</summary>
+
+							<div class="form">
+								<form 
+										action="/updateGlobalMotion" 
+										method="POST" 
+										onReset="showSliderValueReset( 'motionTime' )" >
+
+									<div>Servo motion time (Current value: <i><span id="motionTimeValue"></span></i> ms)</div>
+
+									<div class="slideContainer">
+										<input 
+											onInput="showSliderValue( 'motionTime' )" 
+											type="range" 
+											min="%GLO_MOT_MIN%" 
+											max="%GLO_MOT_MAX%" 
+											value="%GLO_MOT_VALUE%" 
+											class="slider" 
+											name="motionTime" 
+											id="motionTime">
+									</div>
+
+									<div class="form-button">
+										<input type="submit" value="Save Global Motion Time Value">
+										<input type="reset" value="Reset">
+									</div>
+
+								</form>
+							</div>
+
+						</details>
+					</div>
+
+					<div class="panel panel-default mySettings">
+						<details >
+							<summary>WiFi settings (Click to expand)</summary>
+								<div class="form">
+									<form action="/updateWiFi" method="POST" >
+										<div class="myAlignmentSettingsWF form-item">
+											<label class="myFormInputLabel" for="settingsWF_SSID">SSID</label>
+											<input type="text" required id="settingsWF_SSID" name="settingsWF_SSID" value="%WIFI_SSID%" placeholder="SSID">
+										</div>
+
+										<div class="myAlignmentSettingsWF">
+											<label class="myFormInputLabel" for="settingsWF_AccessPoint">Acess Point</label>
+											<input type="checkbox" onInput="setEnableAccessPoint( 'settingsWF_AccessPoint' )" id="settingsWF_AccessPoint" name="settingsWF_AccessPoint" %WIFI_APMODE% />
+
+										</div>
+
+										<div class="myAlignmentSettingsWF form-item">
+											<label class="myFormInputLabel" for="settingsWF_Password">Password</label>
+											<input type="password" required autocomplete="off" id="settingsWF_Password" name="settingsWF_Password" value="%WIFI_PASSWORD%" placeholder="Password">
+											<i 
+												id="settingsWF_PasswordToggle" 
+												class="fa fa-eye" 
+												aria-hidden="true" 
+												onClick="viewPassword('settingsWF_Password', 'settingsWF_PasswordToggle')"></i>
+										</div>
+
+										<div class="myAlignmentSettingsWF form-item">
+											<label class="myFormInputLabel" for="settingsWF_Adress">IP Address</label>
+											<input type="text" required id="settingsWF_Address" name="settingsWF_Address" value="%WIFI_IPADDRESS%" placeholder="Device Address">
+										</div>
+										<div class="myAlignmentSettingsWF form-item">
+											<label class="myFormInputLabel" for="settingsWF_Gateway">Gateway Address</label>
+											<input type="text" required id="settingsWF_Gateway" name="settingsWF_Gateway" value="%WIFI_GATEWAY%" placeholder="Gateway Address">
+										</div>
+										<div class="myAlignmentSettingsWF form-item">
+											<label class="myFormInputLabel" for="settingsWF_NetworkMask">Network Mask</label>
+											<input type="text" required id="settingsWF_NetworkMask" name="settingsWF_NetworkMask" value="%WIFI_NETMASK%" placeholder="Network Mask">
+										</div>
+
+										<div class="form-button">
+											<input type="submit" value="Save WiFi Settings"> <input type="reset" value="Reset">
+										</div>
+									</form>
+								</div>
+						</details>
+					</div>
+				</div>
+			</div>
+
+			<h2>Available Servos</h2>
+			<div id="servosPlace" class="myPlacementOut">
+			</div>
+			
+			<h2>Available Crossings</h2>
+			<div id="crossingsPlace" class="myPlacementOut">
+			</div>
+			
+			<script type="text/javascript">
+				buildServos();
+				buildCrossings();
+			</script>
+
+		</div>
+
+		<hr>
+		<div style="text-align: center;">
+			<button onclick="history.back()">Main menu</button>
+		</div>
+
+	</body>
+</html>
+

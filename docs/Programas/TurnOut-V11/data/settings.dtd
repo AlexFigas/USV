@@ -1,0 +1,71 @@
+<!ELEMENT Settings        (Wifi, GlobalMotion, Expanders, Servos, Crossings) >
+
+<!ELEMENT Wifi            (ssid, password, address, gateway, network) >
+<!ELEMENT ssid            (#PCDATA) >
+<!ELEMENT password        (#PCDATA) >
+<!ELEMENT address         (#PCDATA) >
+<!ELEMENT gateway         (#PCDATA) >
+<!ELEMENT network         (#PCDATA) >
+<!ATTLIST Wifi            apMode ( 0 | 1 ) "1" >
+
+<!ELEMENT GlobalMotion    (Range) >
+
+<!ELEMENT Range           (min, value, max) >
+<!ELEMENT min             (#PCDATA) >
+<!ELEMENT value           (#PCDATA) >
+<!ELEMENT max             (#PCDATA) >
+<!ATTLIST Range           units CDATA #REQUIRED >
+
+<!ELEMENT Expanders       (ExpandersPWM, ExpandersIO) >
+
+<!ELEMENT ExpandersPWM    (ExpanderPWM)* >
+
+<!ELEMENT ExpanderPWM     EMPTY >
+<!ATTLIST ExpanderPWM     address CDATA #REQUIRED
+                          desc CDATA #IMPLIED >
+
+<!ELEMENT ExpandersIO     (ExpanderIO)* >
+
+<!ELEMENT ExpanderIO      EMPTY >
+<!ATTLIST ExpanderIO      address CDATA #REQUIRED
+                          pinIRQ CDATA #REQUIRED
+                          desc CDATA #IMPLIED >
+
+<!ELEMENT Servos          (Servo)* >
+<!ELEMENT Servo           (Range, Range) >
+<!ATTLIST Servo           name CDATA #REQUIRED
+                          expander CDATA #REQUIRED
+                          index CDATA #REQUIRED
+                          smooth ( 0 | 1 ) "1"
+                          desc CDATA #REQUIRED >
+
+<!ELEMENT Crossings       (Crossing)* >
+
+<!ELEMENT Crossing        (Sensors, Fences, Sound, Range, Range) >
+<!ATTLIST Crossing        name CDATA #REQUIRED
+                          desc CDATA #IMPLIED >
+
+<!ELEMENT Sensors         (Enter, Leave, Light) >
+
+<!ELEMENT Enter           (PortIn)* >
+
+<!ELEMENT PortIn          EMPTY >
+<!ATTLIST PortIn          expander CDATA #REQUIRED
+                          mask CDATA #REQUIRED >
+
+<!ELEMENT Leave           (PortIn)* >
+
+<!ELEMENT Light           (PortOut)* >
+
+<!ELEMENT PortOut         EMPTY >
+<!ATTLIST PortOut         servo CDATA #REQUIRED >
+
+<!ELEMENT Fences          (Fence)* >
+
+<!ELEMENT Fence           EMPTY >
+<!ATTLIST Fence           servo CDATA #REQUIRED >
+
+<!ELEMENT Sound           EMPTY >
+<!ATTLIST Sound           pinDAC CDATA #REQUIRED
+                          timerDAC CDATA #REQUIRED
+                          soundFileName CDATA #REQUIRED >

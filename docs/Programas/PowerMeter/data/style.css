@@ -1,0 +1,176 @@
+html {
+	font-family:		Helvetica;
+	display: 			inline-block;
+	margin: 			0px auto;
+	text-align: 		center;
+}
+
+body {
+	background-color: 	lightgreen;
+}
+
+h1 {
+	color: 				#0F3376;
+	padding: 			1vh;
+	font-size:			44px;
+}
+
+h2 {
+	color: 				#FF00FF;
+	padding: 			1vh;
+	font-size:			40px;
+}
+
+p {
+	font-size: 			36px;
+}
+
+#mainDiv {
+	/* Chrome, Safari, Opera */
+    -webkit-animation:	mymove 5s infinite;
+	
+	/* Standard syntax */
+    animation: 			mymove 5s infinite;
+}
+
+/* Safari, Opera */
+@-webkit-keyframes mymove {
+    50% {
+		-webkit-transform: rotate(360deg);
+	}
+    50% {
+		opacity: 0.35;
+	}
+}
+
+/* Standard syntax */
+@keyframes mymove {
+    50% {
+		transform: rotate(360deg);}
+	
+    50% {
+		opacity: 0.35;
+	}
+}
+
+@media (min-width: 401px) and  (max-width: 800px)  {
+	body { 
+		background-color: lightcyan; 
+	}
+
+	h1 {
+		font-size:			6vw;
+	}
+	
+	h2 {
+		font-size:			5vw;
+	}
+	
+	p {
+		font-size: 			4vw;
+	}
+}
+		
+@media (max-width: 400px) {
+	body { 
+		background-color: lightyellow; 
+	}
+	
+	h1 {
+		font-size:			6vw;
+	}
+	
+	h2 {
+		font-size:			5vw;
+	}
+	
+	p {
+		font-size: 			4vw;
+	}
+}
+
+.button {
+	display:			inline-block;
+	background-color:	#008CBA;
+	border:				none;
+	border-radius:		4px;
+	color:				white;
+	padding:			16px 40px;
+	text-decoration:	none;
+	font-size:			4vw;
+	margin:				2px;
+	cursor:				pointer;
+	
+	border-width:		10px;
+	border-style:		solid;
+	
+	#border-color: 		#ff6400 #cf6400 #cf6400 #ff6400;
+	border-color: 		yellow black black yellow;
+}:active {
+	#border-color: 		#cf6400 #ff6400 #ff6400 #cf6400;
+	border-color: 		black yellow yellow black;
+}
+
+.button2 {
+	background-color:	#f44336;
+}
+
+table.powerStatus { 
+	border-collapse:	collapse;
+	border-radius:		15px;
+	width:				35%; 
+	margin-left:		auto; 
+	margin-right:		auto;
+	font-size:			1.0rem;
+	color:				#0000FF;
+}
+th.powerStatus { 
+	padding:			12px;
+	background-color:	#0043af;
+	color:				white;
+}
+
+th.header {
+	
+}
+
+th.footer {
+	color:				lightgray;
+}
+
+tr.powerStatus {
+	border:				1px solid #ddd;
+	padding:			12px;
+}
+
+tr.powerStatus:nth-child(even) {
+	background-color:	#A0D2D4;
+}
+
+tr.powerStatus:nth-child(odd) {
+	background-color:	#EEB808;
+
+}
+
+tr.powerStatus:first-child {
+	#background-color:	#A0D200;
+}
+
+tr.powerStatus:last-child {
+	#background-color:	#EE0008;
+}
+
+tr.powerStatus:hover {
+	background-color:	#bcbcbc;
+}
+
+tr.powerStatus {
+	border:				none;
+	padding:			12px;
+}
+.sensor {
+	color:				white;
+	font-weight:		bold;
+	#background-color:	#bcbcbc;
+	padding:			1px;
+}

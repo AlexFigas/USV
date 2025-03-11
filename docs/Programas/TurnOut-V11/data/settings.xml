@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
+<!DOCTYPE Settings SYSTEM 'settings.dtd'>
+
+<Settings>
+	<Wifi apMode="1">
+		<ssid>Tires-Trains</ssid>
+		<password>s@gredo</password>
+		<address>192.168.5.5</address>
+		<gateway>192.168.5.1</gateway>
+		<network>255.255.255.0</network>
+	</Wifi>
+
+	<GlobalMotion>
+		<Range units="ms">
+			<min>25</min>
+			<value>50</value>
+			<max>500</max>
+		</Range>
+	</GlobalMotion>
+	
+	<Expanders>
+		<ExpandersPWM>
+			<ExpanderPWM address="0x40" desc="PWM Expander #1" />
+		</ExpandersPWM>
+		
+		<ExpandersIO>
+			<ExpanderIO address="0x20" pinIRQ="12" desc="IO Expander #1" />
+		</ExpandersIO>
+	</Expanders>
+	
+	<Servos>
+		<Servo name="Passagem nível vila" expander="0" index="0" smooth="1" desc="Entrada norte" >
+			<Range units="ms">
+				<min>100</min>
+				<value>140</value>
+				<max>500</max>
+			</Range>
+			<Range units="ms">
+				<min>100</min>
+				<value>340</value>
+				<max>500</max>
+			</Range>
+		</Servo>
+		
+		<Servo name="Passagem nível vila" expander="0" index="1" smooth="1" desc="Entrada sul" >
+			<Range units="ms">
+				<min>100</min>
+				<value>140</value>
+				<max>500</max>
+			</Range>
+			<Range units="ms">
+				<min>100</min>
+				<value>340</value>
+				<max>500</max>
+			</Range>
+		</Servo>
+		
+		<Servo name="Passagem nível vila" expander="0" index="2" smooth="0" desc="Luzes" >
+			<Range units="ms">
+				<min>0</min>
+				<value>0</value>
+				<max>4095</max>
+			</Range>
+			<Range units="ms">
+				<min>0</min>
+				<value>4095</value>
+				<max>4095</max>
+			</Range>
+		</Servo>
+
+		<Servo name="Ponte Velha" expander="0" index="3" smooth="1" desc="" >
+			<Range units="ms">
+				<min>100</min>
+				<value>110</value>
+				<max>500</max>
+			</Range>
+			<Range units="ms">
+				<min>100</min>
+				<value>350</value>
+				<max>500</max>
+			</Range>
+		</Servo>
+		
+		<Servo name="Tunel" expander="0" index="4" smooth="1" desc="" >
+			<Range units="ms">
+				<min>100</min>
+				<value>110</value>
+				<max>500</max>
+			</Range>
+			<Range units="ms">
+				<min>100</min>
+				<value>350</value>
+				<max>500</max>
+			</Range>
+		</Servo>
+	</Servos>
+	
+	<Crossings>
+		<Crossing name="Passagem nível vila" desc="Com cancela">
+			<Sensors>
+				<Enter>
+					<PortIn expander="0" mask="0x01" />
+				</Enter>
+				<Leave>
+					<PortIn expander="0" mask="0x02" />
+				</Leave>
+				<Light>
+					<PortOut servo="2" />
+				</Light>
+			</Sensors>
+			
+			<Fences>
+				<Fence servo="0" />
+				<Fence servo="1" />
+			</Fences>
+			
+			<Sound pinDAC="25" timerDAC="0" soundFileName="/ring.dat" />
+			
+			<Range units="%">
+				<min>0</min>
+				<value>20</value>
+				<max>100</max>
+			</Range>
+			<Range units="%">
+				<min>0</min>
+				<value>80</value>
+				<max>100</max>
+			</Range>
+		</Crossing>
+	</Crossings>
+</Settings>
