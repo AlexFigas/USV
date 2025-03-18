@@ -2,9 +2,12 @@
 #include <SoftwareSerial.h>
 #include <TinyGPSPlus.h>
 
+// This example works in both ESP32 and Arduino Uno.
+// The RX and TX should be changed to the correct pins for your board
+
 // static const int RXPin = 4, TXPin = 3;
-#define RXPin D4
-#define TXPin D3
+#define RXPin 17 // @changeme
+#define TXPin 16
 
 static const uint32_t GPSBaud = 9600;
 
