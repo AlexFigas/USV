@@ -4,7 +4,6 @@
 #include "ServoModelRailroad.h"
 #include "Settings.h"
 #include "TrainSensor.h"
-
 #include <XT_DAC_Audio.h>
 
 typedef class Crossing* PtrCrossing;
@@ -21,40 +20,42 @@ typedef class Crossing* PtrCrossing;
  * Written by Carlos Gonçalves
  *
  */
-class Crossing {
+class Crossing
+{
   private:
     /**
      * Possible states for a crossing
      */
-    enum StateSound {
-      NoTrain,
-      TrainEntering,
-      SoundStart,
-      SoundUp,
-      SoundPlaying,
-      TrainLeaving,
-      TrainLeaved,
-      SoundDown,
-      SoundStop
+    enum StateSound
+    {
+        NoTrain,
+        TrainEntering,
+        SoundStart,
+        SoundUp,
+        SoundPlaying,
+        TrainLeaving,
+        TrainLeaved,
+        SoundDown,
+        SoundStop
     };
 
     /**
      * Default DAC values to use
      */
-    const static int DefaultPinDAC    = 25;
-    const static int DefaultTimerDAC  = 0;
+    const static int DefaultPinDAC = 25;
+    const static int DefaultTimerDAC = 0;
 
     /**
      * Default volume values to use
      */
-    const static int DefaultStepVolume  = 10;
-    const static int DefaultMinVolume   = 20;
-    const static int DefaultMaxVolume   = 70;
+    const static int DefaultStepVolume = 10;
+    const static int DefaultMinVolume = 20;
+    const static int DefaultMaxVolume = 70;
 
     /**
-     * Duration (in ms) to increase/decrease the sound volume from the min/max to the max/min values 
+     * Duration (in ms) to increase/decrease the sound volume from the min/max to the max/min values
      */
-    const static unsigned long DeltaTime  = 250;
+    const static unsigned long DeltaTime = 250;
 
     /**
      * Set of crossings. Used in the loops method
@@ -66,8 +67,8 @@ class Crossing {
      * Volume settings
      */
     int _stepVolume = DefaultStepVolume;
-    int _minVolume  = DefaultMinVolume;
-    int _maxVolume  = DefaultMaxVolume;
+    int _minVolume = DefaultMinVolume;
+    int _maxVolume = DefaultMaxVolume;
     int _volume;
 
     /**
@@ -117,7 +118,7 @@ class Crossing {
 
     /**
      * Set of servos used to controll the fences associated width a crossing
-    */
+     */
     PtrServoModelRailroad* _fences;
     int _fencesSize;
 
@@ -132,22 +133,22 @@ class Crossing {
     PtrServoModelRailroad* initSensors(int& outSize, SimpleLinkedList<PtrSettingsPortOut>& input);
 
     /**
-      * Open all the fences associated with the crossing
+     * Open all the fences associated with the crossing
      */
     void openFences();
 
     /**
-      * Close all the fences associated with the crossing
+     * Close all the fences associated with the crossing
      */
     void closeFences();
 
     /**
-      * Turn on all the lights associated with the crossing
+     * Turn on all the lights associated with the crossing
      */
     void lightsOn();
 
     /**
-      * Turn off all the lights associated with the crossing
+     * Turn off all the lights associated with the crossing
      */
     void lightsOff();
 
@@ -182,10 +183,11 @@ class Crossing {
      * @param settings  - The configurations/settings for the current crossing
      */
     Crossing(PtrSettingsCrossing& settings);
+
   public:
-    const static int CommandOpen  = 0;
+    const static int CommandOpen = 0;
     const static int CommandClose = CommandOpen + 1;
-    
+
     /**
      * Close the crosing using the web handler
      */

@@ -16,7 +16,7 @@ void initDisplay(TFT_eSPI& display);
 
 void clearDisplay(TFT_eSPI& display);
 
-void setPositionDisplay(TFT_eSPI& display, int x=0, int y=0);
+void setPositionDisplay(TFT_eSPI& display, int x = 0, int y = 0);
 
 void offDisplay(void);
 
@@ -24,4 +24,4 @@ void onDisplay(void);
 
 void drawBmpDisplay(TFT_eSPI& display, const char* filename, int16_t x, int16_t y);
 
-#endif	// MyDisplay_h
+#endif  // MyDisplay_h

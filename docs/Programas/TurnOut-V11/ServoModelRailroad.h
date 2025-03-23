@@ -12,22 +12,24 @@ typedef class ServoModelRailroad* PtrServoModelRailroad;
  * Written by Carlos Gonçalves
  *
  */
-class ServoModelRailroad {
+class ServoModelRailroad
+{
   private:
     /**
      * Possible states for a Servo
      */
-    enum ServoModelRailroadState {
-      MinimumPosition,
-      MaximumPosition,
-      CenterPosition,
-      MovingToMax,
-      MovingToMin
+    enum ServoModelRailroadState
+    {
+        MinimumPosition,
+        MaximumPosition,
+        CenterPosition,
+        MovingToMax,
+        MovingToMin
     };
 
     /**
      * Default PWM incremement value ( in a 0 -> 4096 resolution)
-    */
+     */
     const static uint16_t StepMove = 5;
 
     /**
@@ -35,7 +37,7 @@ class ServoModelRailroad {
      */
     const static uint16_t DefaultMinServo = 250;
     const static uint16_t DefaultMaxServo = 350;
-    
+
     /**
      * Amount of time (in milli seconds) for the servo move from the min/max position the max/min position
      */
@@ -59,7 +61,7 @@ class ServoModelRailroad {
 
     /**
      * The index, within the expander, used to controll the underlying servo
-    */
+     */
     byte _index;
 
     /**
@@ -96,10 +98,11 @@ class ServoModelRailroad {
      * Servo state machine control
      */
     void loop();
+
   public:
-    const static int CommandMin     = 0;
-    const static int CommandCenter  = CommandMin + 1;
-    const static int CommandMax     = CommandCenter + 1 ;
+    const static int CommandMin = 0;
+    const static int CommandCenter = CommandMin + 1;
+    const static int CommandMax = CommandCenter + 1;
 
     /**
      * Update interval values according to the values presented in the settings attribute
@@ -109,7 +112,7 @@ class ServoModelRailroad {
     /**
      * Adjust (increment/decrement) the value of the minimum position
      *
-     * @param delta - the value to increment/decrement to the current minimum position 
+     * @param delta - the value to increment/decrement to the current minimum position
      */
     void adjustMinimum(uint16_t delta);
 
@@ -117,7 +120,7 @@ class ServoModelRailroad {
      * Set the value of the minimum position
      */
     void setMinimum(uint16_t minimumPosition);
-  
+
     /**
      * Get the value of the minimum position
      */
@@ -126,7 +129,7 @@ class ServoModelRailroad {
     /**
      * Adjust (increment/decrement) the value of the maximum position
      *
-     * @param delta - the value to increment/decrement to the current maximum position 
+     * @param delta - the value to increment/decrement to the current maximum position
      */
     void adjustMaximum(uint16_t delta);
 
@@ -172,7 +175,7 @@ class ServoModelRailroad {
 
     /**
      * Auxiliary method to show the object ( equivalent to the toString() method of Java)
-    */
+     */
     void show();
 
     /**
@@ -187,7 +190,7 @@ class ServoModelRailroad {
 
     /**
      * Get a servo given its index,
-     * 
+     *
      * The first servo (given the number of servos in the configuration file) is zero
      */
     static PtrServoModelRailroad getServo(int index);

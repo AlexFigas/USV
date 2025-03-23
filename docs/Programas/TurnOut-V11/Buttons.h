@@ -13,4 +13,4 @@ void initializeButtons(Button2& bShowStatus);
  */
 void handleClick(Button2& bShowStatus);
 
-#endif	// _Buttons_h_
+#endif  // _Buttons_h_

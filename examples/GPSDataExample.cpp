@@ -6,7 +6,7 @@
 // The RX and TX should be changed to the correct pins for your board
 
 // static const int RXPin = 4, TXPin = 3;
-#define RXPin 17 // @changeme
+#define RXPin 17  // @changeme
 #define TXPin 16
 
 static const uint32_t GPSBaud = 9600;

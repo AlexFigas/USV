@@ -6,8 +6,9 @@
 
 typedef class TrainSensor* PtrTrainSensor;
 
-class TrainSensor {
-  friend class ExpanderIO;
+class TrainSensor
+{
+    friend class ExpanderIO;
 
   private:
     void setTrainPresent(uint8_t rawValue);
@@ -24,7 +25,7 @@ class TrainSensor {
 
     /**
      * Auxiliary method to show the object ( equivalent to the toString() method of Java)
-    */
+     */
     void show();
 };
 

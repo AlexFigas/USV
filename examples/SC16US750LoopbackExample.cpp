@@ -2,7 +2,8 @@
 #include <Arduino.h>
 
 constexpr uint32_t CRYSTAL_FREQ = 14745600;
-constexpr uint8_t I2C_ADD = 0x4D;;
+constexpr uint8_t I2C_ADD = 0x4D;
+;
 constexpr uint32_t UART_BAUD = 115200;
 
 SC16IS7X0 sc16is750(CRYSTAL_FREQ);

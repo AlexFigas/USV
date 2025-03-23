@@ -28,4 +28,4 @@ Print* getDisplay();
  */
 unsigned long getMessageTimeout();
 
-#endif	// _Display_h_
+#endif  // _Display_h_

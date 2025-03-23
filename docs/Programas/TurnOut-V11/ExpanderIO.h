@@ -2,17 +2,17 @@
 #define _ExpanderIO_h_
 
 #include "Expander.h"
-
-#include <PCF8574.h>
 #include <FunctionalInterrupt.h>
 #include <List.hpp>
+#include <PCF8574.h>
 
 typedef class ExpanderIO* PtrExpanderIO;
 
 /**
  * Class representing an Input/Output pin expander supported by the PCF8574.
  */
-class ExpanderIO : public Expander {
+class ExpanderIO : public Expander
+{
   private:
     /**
      * Set of IO expanders. Used in the loops method
@@ -61,6 +61,7 @@ class ExpanderIO : public Expander {
      * Expander state machine control
      */
     void loop();
+
   public:
     /*
      * Initializes the expander.
@@ -76,7 +77,7 @@ class ExpanderIO : public Expander {
 
     /**
      * Auxiliary method to show the object ( equivalent to the toString() method of Java)
-    */
+     */
     void show();
 
     /**

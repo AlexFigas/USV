@@ -6,4 +6,4 @@
  */
 void initializeWiFi();
 
-#endif	// _WiFiUtils_h_
+#endif  // _WiFiUtils_h_

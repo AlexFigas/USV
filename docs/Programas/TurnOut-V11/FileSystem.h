@@ -21,7 +21,7 @@ String readFileContents(String contentsPath);
  * Write (replace/update) Read the contents of file from the contents of a single String
  *
  * @param contentsPath  - path to the file
- * @param contents      - the data to be written in the file 
+ * @param contents      - the data to be written in the file
  */
 void writeFileContents(String contentsPath, String contents);
 
@@ -34,4 +34,4 @@ void writeFileContents(String contentsPath, String contents);
  */
 unsigned char* readWavData(char* contentsPath);
 
-#endif	// _FileSystem_h_
+#endif  // _FileSystem_h_

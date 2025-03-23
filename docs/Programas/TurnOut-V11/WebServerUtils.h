@@ -6,6 +6,6 @@
 /**
  * Initialization of the WebServer routes
  */
-void setupWebRoutes(AsyncWebServer &server);
+void setupWebRoutes(AsyncWebServer& server);
 
-#endif	// _WebServerUtils_h_
+#endif  // _WebServerUtils_h_

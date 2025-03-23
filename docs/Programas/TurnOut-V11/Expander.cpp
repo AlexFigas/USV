@@ -1,9 +1,9 @@
 #include "Expander.h"
-
 #include <Utils.h>
 
-Expander::Expander() {
-  DebugMessagePrintf( "Expander::Expander()\n" );
+Expander::Expander()
+{
+    DebugMessagePrintf("Expander::Expander()\n");
 
-  this->_initialized = false;
+    this->_initialized = false;
 }

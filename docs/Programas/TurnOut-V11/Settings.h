@@ -2,142 +2,155 @@
 #define _Settings_h_
 
 #include "Utils.h"
-
 #include <Arduino.h>
 #include <SimpleLinkedList.h>
 
 /* WiFi settings */
-typedef struct {
-  char* ssid;
-  char* password;
-  bool apMode;
-  char* address;
-  char* gateway;
-  char* network;
+typedef struct
+{
+    char* ssid;
+    char* password;
+    bool apMode;
+    char* address;
+    char* gateway;
+    char* network;
 
-  void show();
-} SettingsWiFi, * PtrSettingsWiFi;
+    void show();
+} SettingsWiFi, *PtrSettingsWiFi;
 
 /* Range/Slider settings */
-typedef struct {
-  char* units;
-  int min;
-  int value;
-  int max;
+typedef struct
+{
+    char* units;
+    int min;
+    int value;
+    int max;
 
-  void show();
-} SettingsRange, * PtrSettingsRange;
+    void show();
+} SettingsRange, *PtrSettingsRange;
 
 /* PWM Expander settings */
-typedef struct {
-  int address;
-  char* expanderDesc;
+typedef struct
+{
+    int address;
+    char* expanderDesc;
 
-  void show();
-} SettingsExpanderPWM, * PtrSettingsExpanderPWM;
+    void show();
+} SettingsExpanderPWM, *PtrSettingsExpanderPWM;
 
 /* Set of PWM Expander settings */
-typedef struct {
-  SimpleLinkedList<PtrSettingsExpanderPWM> expandersPWM;
+typedef struct
+{
+    SimpleLinkedList<PtrSettingsExpanderPWM> expandersPWM;
 
-  void show();
-} SettingsExpandersPWM, * PtrSettingsExpandersPWM;
+    void show();
+} SettingsExpandersPWM, *PtrSettingsExpandersPWM;
 
 /* IO Expander settings */
-typedef struct {
-  int address;
-  int pinIRQ;
-  char* expanderDesc;
+typedef struct
+{
+    int address;
+    int pinIRQ;
+    char* expanderDesc;
 
-  void show();
-} SettingsExpanderIO, * PtrSettingsExpanderIO;
+    void show();
+} SettingsExpanderIO, *PtrSettingsExpanderIO;
 
 /* Set of IO Expander settings */
-typedef struct {
-  SimpleLinkedList<PtrSettingsExpanderIO> expandersIO;
+typedef struct
+{
+    SimpleLinkedList<PtrSettingsExpanderIO> expandersIO;
 
-  void show();
-} SettingsExpandersIO, * PtrSettingsExpandersIO;
+    void show();
+} SettingsExpandersIO, *PtrSettingsExpandersIO;
 
 /* Servo settings */
-typedef struct {
-  char* servoName;
-  char* servoDesc;
-  int expander;
-  int index;
-  bool smooth;
-  SettingsRange minPosition;
-  SettingsRange maxPosition;
+typedef struct
+{
+    char* servoName;
+    char* servoDesc;
+    int expander;
+    int index;
+    bool smooth;
+    SettingsRange minPosition;
+    SettingsRange maxPosition;
 
-  void show();
-} SettingsServo, * PtrSettingsServo;
+    void show();
+} SettingsServo, *PtrSettingsServo;
 
 /* Set of Servo settings */
-typedef struct {
-  SimpleLinkedList<PtrSettingsServo> servos;
+typedef struct
+{
+    SimpleLinkedList<PtrSettingsServo> servos;
 
-  void show();
-} SettingsServos, * PtrSettingsServos;
+    void show();
+} SettingsServos, *PtrSettingsServos;
 
 /* Input Port settings */
-typedef struct {
-  int expander;
-  int mask;
+typedef struct
+{
+    int expander;
+    int mask;
 
-  void show();
-} SettingsPortIn, * PtrSettingsPortIn;
+    void show();
+} SettingsPortIn, *PtrSettingsPortIn;
 
 /* Output Port settings */
-typedef struct {
-  int servo;
+typedef struct
+{
+    int servo;
 
-  void show();
-} SettingsPortOut, * PtrSettingsPortOut;
+    void show();
+} SettingsPortOut, *PtrSettingsPortOut;
 
 /* Crossing Fence (servo number ) settings */
-typedef struct {
-  int servoIndex;
+typedef struct
+{
+    int servoIndex;
 
-  void show();
-} SettingsFence, * PtrSettingsFence;
+    void show();
+} SettingsFence, *PtrSettingsFence;
 
 /* Set of Crossing Fence (servo number ) settings */
-typedef struct {
-  SimpleLinkedList<PtrSettingsFence> fences;
+typedef struct
+{
+    SimpleLinkedList<PtrSettingsFence> fences;
 
-  void show();
-} SettingsFences, * PtrSettingsFences;
+    void show();
+} SettingsFences, *PtrSettingsFences;
 
 /* Crossing settings */
-typedef struct {
-  char* crossingName;
-  char* crossingDesc;
-  int pinDAC;
-  int timerDAC;
-  char* soundFileName;
-  SimpleLinkedList<PtrSettingsPortIn> enter;
-  SimpleLinkedList<PtrSettingsPortIn> leave;
-  SimpleLinkedList<PtrSettingsPortOut> light;
-  SimpleLinkedList<PtrSettingsFence> fences;
-  SettingsRange minVolume;
-  SettingsRange maxVolume;
+typedef struct
+{
+    char* crossingName;
+    char* crossingDesc;
+    int pinDAC;
+    int timerDAC;
+    char* soundFileName;
+    SimpleLinkedList<PtrSettingsPortIn> enter;
+    SimpleLinkedList<PtrSettingsPortIn> leave;
+    SimpleLinkedList<PtrSettingsPortOut> light;
+    SimpleLinkedList<PtrSettingsFence> fences;
+    SettingsRange minVolume;
+    SettingsRange maxVolume;
 
-  void show();
-  
+    void show();
+
   private:
-    void show(SimpleLinkedList<PtrSettingsPortIn>& ports, char * name);
+    void show(SimpleLinkedList<PtrSettingsPortIn>& ports, char* name);
 
-    void show(SimpleLinkedList<PtrSettingsPortOut>& ports, char * name);
+    void show(SimpleLinkedList<PtrSettingsPortOut>& ports, char* name);
 
-    void show(SimpleLinkedList<PtrSettingsFence>& fences, char * name);
-} SettingsCrossing, * PtrSettingsCrossing;
+    void show(SimpleLinkedList<PtrSettingsFence>& fences, char* name);
+} SettingsCrossing, *PtrSettingsCrossing;
 
 /* Set of Crossing settings */
-typedef struct {
-  SimpleLinkedList<PtrSettingsCrossing> crossings;
+typedef struct
+{
+    SimpleLinkedList<PtrSettingsCrossing> crossings;
 
-  void show();
-} SettingsCrossings, * PtrSettingsCrossings;
+    void show();
+} SettingsCrossings, *PtrSettingsCrossings;
 
 void readSettings();
 
@@ -169,4 +182,4 @@ void writeSettings(PtrSettingsServos settings);
 
 void writeSettings(PtrSettingsCrossings settings);
 
-#endif	// _Settings_h_
+#endif  // _Settings_h_

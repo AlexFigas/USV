@@ -7,4 +7,4 @@ boolean eduroamPresent();
 
 void initializeWiFi();
 
-#endif	// _WirelessCommunication_h_ 
+#endif  // _WirelessCommunication_h_

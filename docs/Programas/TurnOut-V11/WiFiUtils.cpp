@@ -1,69 +1,76 @@
+#include "WiFiUtils.h"
 #include "Display.h"
 #include "Settings.h"
-#include "WiFiUtils.h"
-
 #include <Utils.h>
 #include <WiFi.h>
 
 static const unsigned long WifiTimeout = 100;
 
-static void waitForWiFi(char* ssidName) {
-  DebugMessagePrintf( "WiFiUtils::waitForWiFi(%s)\n", ssidName );
-  
-  myPrintf( getDisplay(), "Connecting to %s...\n", ssidName );
-  
-  while ( WiFi.status() != WL_CONNECTED) {
-      delay( WifiTimeout );
-      DebugMessagePrintf( "." );
+static void waitForWiFi(char* ssidName)
+{
+    DebugMessagePrintf("WiFiUtils::waitForWiFi(%s)\n", ssidName);
+
+    myPrintf(getDisplay(), "Connecting to %s...\n", ssidName);
+
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(WifiTimeout);
+        DebugMessagePrintf(".");
     }
 }
 
-void initializeWiFi() {
-  DebugMessagePrintf( "WiFiUtils::initializeWiFi()\n" );
-  
-  PtrSettingsWiFi settingsWiFi = getSettingsWiFi();
+void initializeWiFi()
+{
+    DebugMessagePrintf("WiFiUtils::initializeWiFi()\n");
 
-  DebugMessagePrintf( "Disconnecting from previous mode...\n" );
-  WiFi.disconnect();
-  
-  if ( settingsWiFi->apMode ) {
-    DebugMessagePrintf( "Configuring WiFi in AP mode...\n" );
+    PtrSettingsWiFi settingsWiFi = getSettingsWiFi();
 
-    WiFi.mode( WIFI_AP );
+    DebugMessagePrintf("Disconnecting from previous mode...\n");
+    WiFi.disconnect();
 
-    IPAddress apAddress, apGateway, apNetworkMask;
+    if (settingsWiFi->apMode)
+    {
+        DebugMessagePrintf("Configuring WiFi in AP mode...\n");
 
-    apAddress.fromString( settingsWiFi->address );
-    apGateway.fromString( settingsWiFi->gateway );
-    apNetworkMask.fromString( settingsWiFi->network );
+        WiFi.mode(WIFI_AP);
 
-    DebugMessagePrintf( "softAPConfig(%s, %s, %s)...\n", apAddress.toString().c_str(), apGateway.toString().c_str(), apNetworkMask.toString().c_str() );
-    WiFi.softAPConfig( apAddress, apGateway, apNetworkMask );
+        IPAddress apAddress, apGateway, apNetworkMask;
 
-    DebugMessagePrintf( "softAP(%s)...\n", settingsWiFi->ssid );
-    WiFi.softAP( settingsWiFi->ssid /*, settingsWiFi->password*/ );
+        apAddress.fromString(settingsWiFi->address);
+        apGateway.fromString(settingsWiFi->gateway);
+        apNetworkMask.fromString(settingsWiFi->network);
 
-    DebugMessagePrintf( "Wait %d ms for AP_START...\n", WifiTimeout );
-    delay( WifiTimeout );
+        DebugMessagePrintf("softAPConfig(%s, %s, %s)...\n",
+                           apAddress.toString().c_str(),
+                           apGateway.toString().c_str(),
+                           apNetworkMask.toString().c_str());
+        WiFi.softAPConfig(apAddress, apGateway, apNetworkMask);
 
-    DebugMessagePrintf( "Acess Point IP: %s\n", WiFi.softAPIP().toString().c_str() );
+        DebugMessagePrintf("softAP(%s)...\n", settingsWiFi->ssid);
+        WiFi.softAP(settingsWiFi->ssid /*, settingsWiFi->password*/);
 
-    myPrintf( getDisplay(), "AP IP: %s.\n", WiFi.softAPIP().toString().c_str() );
-  }
-  else {
-    DebugMessagePrintf( "Configuring WiFi in STA mode...\n" );
+        DebugMessagePrintf("Wait %d ms for AP_START...\n", WifiTimeout);
+        delay(WifiTimeout);
 
-    WiFi.mode( WIFI_STA );
+        DebugMessagePrintf("Acess Point IP: %s\n", WiFi.softAPIP().toString().c_str());
 
-    WiFi.begin( settingsWiFi->ssid, settingsWiFi->password );
+        myPrintf(getDisplay(), "AP IP: %s.\n", WiFi.softAPIP().toString().c_str());
+    }
+    else
+    {
+        DebugMessagePrintf("Configuring WiFi in STA mode...\n");
 
-    waitForWiFi( settingsWiFi->ssid );
-    // We are connected
+        WiFi.mode(WIFI_STA);
 
-    DebugMessagePrintf( "\nSSID: %s\n", WiFi.SSID().c_str() );
-    DebugMessagePrintf( "IP: %s\n", WiFi.localIP().toString().c_str() );
-    DebugMessagePrintf( "RSSI: %d dBm\n", WiFi.RSSI() );
+        WiFi.begin(settingsWiFi->ssid, settingsWiFi->password);
 
-    myPrintf( getDisplay(), "IP: %s.\n", WiFi.localIP().toString().c_str() );
-  }
+        waitForWiFi(settingsWiFi->ssid);
+        // We are connected
+
+        DebugMessagePrintf("\nSSID: %s\n", WiFi.SSID().c_str());
+        DebugMessagePrintf("IP: %s\n", WiFi.localIP().toString().c_str());
+        DebugMessagePrintf("RSSI: %d dBm\n", WiFi.RSSI());
+
+        myPrintf(getDisplay(), "IP: %s.\n", WiFi.localIP().toString().c_str());
+    }
 }

@@ -6,13 +6,13 @@
 
 void initTime();
 
-String getCurrentDateAndTime(char request='.', time_t timeStamp=time(nullptr) );
+String getCurrentDateAndTime(char request = '.', time_t timeStamp = time(nullptr));
 
-int getCurrentHours(time_t timeStamp=time(nullptr) );
+int getCurrentHours(time_t timeStamp = time(nullptr));
 
-int getCurrentMinutes(time_t timeStamp=time(nullptr) );
+int getCurrentMinutes(time_t timeStamp = time(nullptr));
 
-int getCurrentSeconds(time_t timeStamp=time(nullptr) );
+int getCurrentSeconds(time_t timeStamp = time(nullptr));
 
 void loopTime(void);
 

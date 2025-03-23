@@ -2,9 +2,8 @@
 #define _ExpanderPWM_h_
 
 #include "Expander.h"
-
-#include <Arduino.h>
 #include <Adafruit_PWMServoDriver.h>
+#include <Arduino.h>
 #include <Wire.h>
 
 typedef class ExpanderPWM* PtrExpanderPWM;
@@ -16,7 +15,8 @@ typedef class ExpanderPWM* PtrExpanderPWM;
  *
  * Adpated by Carlos Gonçalves to controll model railroad turnouts using servos (9G)
  */
-class ExpanderPWM : public Expander {
+class ExpanderPWM : public Expander
+{
   private:
     /**
      * Set of PWM expanders. Used in the loops method
@@ -68,7 +68,7 @@ class ExpanderPWM : public Expander {
 
     /**
      * Auxiliary method to show the object ( equivalent to the toString() method of Java)
-    */
+     */
     void show();
 
     /**

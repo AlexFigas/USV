@@ -11,4 +11,4 @@ void offPowerSocket(void);
 
 String statusPowerSocket(void);
 
-#endif	// MyPowerSocket_h
+#endif  // MyPowerSocket_h
