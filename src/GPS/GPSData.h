@@ -2,12 +2,10 @@
 #define GPSDATA_H
 
 #include <TinyGPSPlus.h>
-#include <cstdint>
-#include <cstdio>
-#include <cstring>
 
-struct GPSData
+class GPSData
 {
+  public:
     GPSData();
 
     void update(TinyGPSPlus& gps);

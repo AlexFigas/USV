@@ -60,16 +60,17 @@ void GPS_BN880::printDebug()
         return;
 
     printed = true;
-    Serial.print(F("GPS_BAUD: "));
-    Serial.print(GPS_BAUD);
-    Serial.print(F(" I2C_ADD: "));
-    Serial.printf("0x%02X", I2C_ADD);
-    Serial.print(F(" CRYSTAL_FREQ: "));
-    Serial.print(CRYSTAL_FREQ);
-    Serial.print(F(" SDA_PIN: "));
-    Serial.print(SDA_PIN);
-    Serial.print(F(" SCL_PIN: "));
+    Serial.println(F("GPS_BN880 Debug Info:"));
+    Serial.print(F("SDA_PIN: "));
+    Serial.println(SDA_PIN);
+    Serial.print(F("SCL_PIN: "));
     Serial.println(SCL_PIN);
+    Serial.print(F("I2C_ADD: "));
+    Serial.println(I2C_ADD, HEX);
+    Serial.print(F("CRYSTAL_FREQ: "));
+    Serial.println(CRYSTAL_FREQ);
+    Serial.print(F("GPS_BAUD: "));
+    Serial.println(GPS_BAUD);
 }
 
 void GPS_BN880::enableDebug()

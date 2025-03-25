@@ -57,38 +57,19 @@ void GPSData::printDateTime(TinyGPSDate& d, TinyGPSTime& t)
 
 void GPSData::update(TinyGPSPlus& gps)
 {
-    if (gps.location.isUpdated() && gps.location.isValid())
-    {
-        location = gps.location;
-    }
-    if (gps.date.isUpdated() && gps.date.isValid())
-    {
-        date = gps.date;
-    }
-    if (gps.time.isUpdated() && gps.time.isValid())
-    {
-        time = gps.time;
-    }
-    if (gps.speed.isUpdated() && gps.speed.isValid())
-    {
-        speed = gps.speed;
-    }
-    if (gps.course.isUpdated() && gps.course.isValid())
-    {
-        course = gps.course;
-    }
-    if (gps.altitude.isUpdated() && gps.altitude.isValid())
-    {
-        altitude = gps.altitude;
-    }
-    if (gps.satellites.isUpdated() && gps.satellites.isValid())
-    {
-        satellites = gps.satellites;
-    }
-    if (gps.hdop.isUpdated() && gps.hdop.isValid())
-    {
-        hdop = gps.hdop;
-    }
+#define UPDATE_IF_VALID(field)                        \
+    if (gps.field.isUpdated() && gps.field.isValid()) \
+        field = gps.field;
+
+    UPDATE_IF_VALID(location);
+    UPDATE_IF_VALID(date);
+    UPDATE_IF_VALID(time);
+    UPDATE_IF_VALID(speed);
+    UPDATE_IF_VALID(course);
+    UPDATE_IF_VALID(altitude);
+    UPDATE_IF_VALID(satellites);
+    UPDATE_IF_VALID(hdop);
+
     charsProcessed = gps.charsProcessed();
     sentencesWithFix = gps.sentencesWithFix();
     failedChecksum = gps.failedChecksum();
@@ -96,21 +77,22 @@ void GPSData::update(TinyGPSPlus& gps)
 
 void GPSData::print()
 {
-    static bool headerPrinted = false;
+    /// @todo Should we print the header every time?
+    // static bool headerPrinted = false;
 
-    if (!headerPrinted)
-    {
-        Serial.println(
-            F("Sats HDOP  Latitude   Longitude   Fix  Date       Time     Date Alt    Course Speed Card  Distance "
-              "Course  Card  Chars Sentences Checksum"));
-        Serial.println(
-            F("           (deg)      (deg)       Age                      Age  (m)    --- from GPS ----  ---- to "
-              "Reference ----  RX    RX        Fail"));
-        Serial.println(
-            F("--------------------------------------------------------------------------------------------------------"
-              "----"));
-        headerPrinted = true;
-    }
+    // if (!headerPrinted)
+    // {
+    Serial.println(
+        F("Sats HDOP  Latitude   Longitude   Fix  Date       Time     Date Alt    Course Speed Card  Distance "
+          "Course  Card  Chars Sentences Checksum"));
+    Serial.println(
+        F("           (deg)      (deg)       Age                      Age  (m)    --- from GPS ----  ---- to "
+          "Reference ----  RX    RX        Fail"));
+    Serial.println(
+        F("--------------------------------------------------------------------------------------------------------"
+          "----"));
+    // headerPrinted = true;
+    // }
 
     static const double REF_LAT = 38.7169, REF_LON = -9.1399;  // Lisbon, Portugal
 
