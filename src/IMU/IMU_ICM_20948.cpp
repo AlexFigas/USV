@@ -10,10 +10,10 @@ void IMU_ICM_20948::setup()
     Wire.begin(SDA_PIN, SCL_PIN);
     Wire.setClock(400000);
 
-    /// @todo All data is 0's
-    while (imu.begin(Wire, 1) != ICM_20948_Stat_Ok)
+    /// @todo Add a way to change the I2C address (0 means 0x68, 1 means 0x69)
+    while (imu.begin(Wire, 0) != ICM_20948_Stat_Ok)
     {
-        Serial.print(F("Initialization failed: "));
+        Serial.print(F("IMU initialization failed: "));
         Serial.println(imu.statusString());
         Serial.println("Retrying...");
     }

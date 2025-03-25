@@ -96,6 +96,7 @@ void GPS_BN880::loop()
     read();
     currentGPSData.update(gps);
 
+    /// @todo 5000 and 10 should be constant
     if (millis() > 5000 && gps.charsProcessed() < 10)
     {
         Serial.println(F("No GPS data received: check wiring"));

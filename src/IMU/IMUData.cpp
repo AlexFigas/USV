@@ -8,6 +8,11 @@ void IMUData::update(ICM_20948_I2C* sensor)
     {
         sensor->getAGMT();
     }
+
+    acc = {sensor->accX(), sensor->accY(), sensor->accZ()};
+    gyr = {sensor->gyrX(), sensor->gyrY(), sensor->gyrZ()};
+    mag = {sensor->magX(), sensor->magY(), sensor->magZ()};
+    temp = sensor->temp();
 }
 
 void IMUData::print()
