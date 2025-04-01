@@ -23,14 +23,18 @@ void LoRaSender::setup()
     Serial.println("LoRa Initialized Successfully!");
 }
 
-void LoRaSender::sendPacket(String message)
+bool LoRaSender::sendPacket(String message)
 {
     if (debug)
         printDebug();
     
-    LoRa.beginPacket();
-    LoRa.print(message);
-    LoRa.endPacket();
+    if (LoRa.beginPacket()) {
+        LoRa.print(message);
+        LoRa.endPacket(true);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void LoRaSender::enableDebug()

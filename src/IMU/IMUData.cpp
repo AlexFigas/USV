@@ -17,6 +17,7 @@ void IMUData::update(ICM_20948_I2C* sensor)
 
 void IMUData::print()
 {
+    Serial.print("IMU: ");
     Serial.print("Acc: [");
     printFloat(acc.x, 5, 2);
     Serial.print(", ");

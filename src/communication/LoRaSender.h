@@ -24,7 +24,7 @@ private:
     LoRaSender(int SCK, int MISO, int MOSI, int SS, int RST, int DIO0, long BAND);
     
     void setup();
-    void sendPacket(String message);
+    bool sendPacket(String message);
     void enableDebug();
 };
 

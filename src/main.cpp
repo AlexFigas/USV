@@ -1,14 +1,14 @@
 #include "GPS/GPS_BN880.h"
 #include "IMU/IMU_ICM_20948.h"
-#include "communication/LoRaSender.h"
 #include "USV/usv.h"
+#include "communication/LoRaSender.h"
 
 #define SDA_PIN 21
 #define SCL_PIN 22
 #define GPS_I2C_ADDR 0x4D
 
 GPS_BN880 gps;
-IMU_ICM_20948 imu; 
+IMU_ICM_20948 imu;
 LoRaSender lora;
 USV usv;
 
@@ -19,15 +19,15 @@ int counter = 0;
 void setup()
 {
     gps.setup();
-    gps.enableDebug();
-    gps.enableInfo();
+    // gps.enableDebug();
+    // gps.enableInfo();
 
     imu.setup();
-    imu.enableDebug();
-    imu.enableInfo();
+    // imu.enableDebug();
+    // imu.enableInfo();
 
     lora.setup();
-    lora.enableDebug();
+    // lora.enableDebug();
 
     usv.begin();
 }
@@ -35,13 +35,12 @@ void setup()
 void loop()
 {
     gps.loop();
-    Serial.println();
-
     imu.loop();
-    Serial.println();
 
-    lora.sendPacket("Hello, World! " + String(counter++));
-    Serial.println();
-    
+    if (lora.sendPacket("Hello, World! " + String(counter)))
+    {
+        counter++;
+    }
+
     usv.loop();
 }
