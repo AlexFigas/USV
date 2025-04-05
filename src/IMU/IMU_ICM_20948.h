@@ -26,6 +26,7 @@ class IMU_ICM_20948
     void loop();
     void enableDebug();
     void enableInfo();
+    IMUData getIMUData();
 };
 
 #endif  // IMU_ICM_20948_H

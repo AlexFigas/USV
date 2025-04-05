@@ -102,3 +102,8 @@ void GPS_BN880::loop()
         Serial.println(F("No GPS data received: check wiring"));
     }
 }
+
+GPSData GPS_BN880::getGPSData()
+{
+    return currentGPSData;
+}

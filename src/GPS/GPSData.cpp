@@ -102,20 +102,19 @@ void GPSData::print()
 
     if (!headerPrinted)
     {
-    Serial.println(
-        F("Sats HDOP  Latitude   Longitude   Fix  Date       Time     Date Alt    Course Speed Card  Distance "
-          "Course  "
-          "Card  Chars Sentences Checksum"));
-    Serial.println(
-        F("           (deg)      (deg)       Age                      Age  (m)    --- from GPS ----  ---- to "
-          "Reference "
-          "----  RX    RX        Fail"));
-    Serial.println(
-        F("--------------------------------------------------------------------------------------------------------"
-          "---"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                xx´x´x
-          
-          "-"));
-    headerPrinted = true;
+        Serial.println(
+            F("Sats HDOP  Latitude   Longitude   Fix  Date       Time     Date Alt    Course Speed Card  Distance "
+              "Course  "
+              "Card  Chars Sentences Checksum"));
+        Serial.println(
+            F("           (deg)      (deg)       Age                      Age  (m)    --- from GPS ----  ---- to "
+              "Reference "
+              "----  RX    RX        Fail"));
+        Serial.println(
+            F("--------------------------------------------------------------------------------------------------------"
+              "---"
+              "-"));
+        headerPrinted = true;
     }
 
     static const double REF_LAT = 38.7169, REF_LON = -9.1399;  // Lisbon, Portugal

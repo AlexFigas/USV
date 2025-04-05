@@ -8,10 +8,6 @@ class GPSData
   public:
     GPSData();
 
-    void update(TinyGPSPlus& gps);
-    void print();
-
-  private:
     TinyGPSLocation location;
     TinyGPSDate date;
     TinyGPSTime time;
@@ -25,6 +21,10 @@ class GPSData
     uint32_t failedChecksum;
     bool isUpdated;
 
+    void update(TinyGPSPlus& gps);
+    void print();
+
+  private:
     void printFloat(float value, bool isValid, int totalWidth, int decimalPlaces);
     void printInt(unsigned long value, bool isValid, int totalWidth);
     void printDateTime(TinyGPSDate& date, TinyGPSTime& time);

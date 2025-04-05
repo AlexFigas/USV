@@ -8,23 +8,19 @@ class IMUData
   public:
     IMUData();
 
-    void update(ICM_20948_I2C* sensor);
-    void print();
-
-  private:
-    struct Acceleration
+    struct Acceleration  // m/s^2 (gravitational acceleration)
     {
         float x;
         float y;
         float z;
     } acc;
-    struct Gyroscope
+    struct Gyroscope  // rad/s (angular velocity)
     {
         float x;
         float y;
         float z;
     } gyr;
-    struct Magnetometer
+    struct Magnetometer  // uT (magnetic field strength)
     {
         float x;
         float y;
@@ -32,6 +28,10 @@ class IMUData
     } mag;
     float temp;
 
+    void update(ICM_20948_I2C* sensor);
+    void print();
+
+  private:
     void printFloat(float value, uint8_t leading, uint8_t decimals);
 };
 

@@ -1,10 +1,11 @@
 #ifndef USV_H
 #define USV_H
 
-#include <Robot.h>
 #include <MovementTwoMotors.h>
+#include <Robot.h>
 
-class USV : public Robot {
+class USV : public Robot
+{
   private:
     Expander expander;
     MotorController leftController;
@@ -13,8 +14,8 @@ class USV : public Robot {
 
   public:
     USV();
-    
+
     void loop();
 };
 
-#endif // USV_H
+#endif  // USV_H

@@ -18,7 +18,7 @@ void LoRaSender::setup()
             ;
     }
     /// @todo Change to a variable in the constructor
-    LoRa.setSpreadingFactor(12); 
+    LoRa.setSpreadingFactor(12);
 
     Serial.println("LoRa Initialized Successfully!");
 }
@@ -27,12 +27,16 @@ bool LoRaSender::sendPacket(String message)
 {
     if (debug)
         printDebug();
-    
-    if (LoRa.beginPacket()) {
+
+    if (LoRa.beginPacket())
+    {
         LoRa.print(message);
         LoRa.endPacket(true);
+        packetCount++;
         return true;
-    } else {
+    }
+    else
+    {
         return false;
     }
 }
@@ -41,7 +45,7 @@ void LoRaSender::enableDebug()
 {
     debug = true;
     Serial.println(F("LoRa Debug mode enabled"));
-}   
+}
 
 void LoRaSender::printDebug()
 {
@@ -66,4 +70,9 @@ void LoRaSender::printDebug()
     Serial.print(F("BAND: "));
     Serial.println(BAND);
     printed = true;
+}
+
+int LoRaSender::getPacketCount()
+{
+    return packetCount;
 }

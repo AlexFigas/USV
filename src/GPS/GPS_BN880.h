@@ -38,6 +38,7 @@ class GPS_BN880
     void loop();
     void enableDebug();
     void enableInfo();
+    GPSData getGPSData();
 };
 
 #endif  // GPS_BN880_H

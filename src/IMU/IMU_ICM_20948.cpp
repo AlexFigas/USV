@@ -74,3 +74,8 @@ void IMU_ICM_20948::loop()
 
     currentIMUData.update(&imu);
 }
+
+IMUData IMU_ICM_20948::getIMUData()
+{
+    return currentIMUData;
+}
