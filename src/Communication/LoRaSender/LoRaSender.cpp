@@ -44,7 +44,7 @@ bool LoRaSender::sendPacket(String message)
 void LoRaSender::enableDebug()
 {
     debug = true;
-    Serial.println(F("LoRa Debug mode enabled"));
+    Serial.println(F("LoRaSender Debug mode enabled"));
 }
 
 void LoRaSender::printDebug()
