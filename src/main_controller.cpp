@@ -1,7 +1,7 @@
-#include "Communication/LoRaSender/LoRaSender.h"
+#include "Communication/LoRaDuplex/LoRaDuplex.h"
 #include "Display/Display.h"
 
-LoRaSender loraSender;
+LoRaDuplex lora;
 Display display;
 
 String currentMessage = "";  // Store the message as the user types
@@ -9,7 +9,7 @@ String currentMessage = "";  // Store the message as the user types
 void setup()
 {
     Serial.begin(115200);  // Initialize serial communication
-    loraSender.setup();    // Setup LoRa sender
+    lora.setup();          // Setup LoRa sender
     display.setup();       // Setup display
 
     // Display a welcome message and instructions
@@ -31,7 +31,7 @@ void loop()
             if (currentMessage.length() > 0)
             {
                 // Send the message via LoRa
-                loraSender.sendPacket(currentMessage);
+                lora.sendPacket(currentMessage);
 
                 // Provide feedback to the user
                 Serial.print("Message sent: ");

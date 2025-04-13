@@ -1,5 +1,4 @@
-#include "Communication/LoRaReceiver/LoRaReceiver.h"
-#include "Communication/LoRaSender/LoRaSender.h"
+#include "Communication/LoRaDuplex/LoRaDuplex.h"
 #include "Display/Display.h"
 #include "GPS/GPS_BN880.h"
 #include "IMU/IMU_ICM_20948.h"
@@ -7,8 +6,7 @@
 
 GPS_BN880 gps;
 IMU_ICM_20948 imu;
-LoRaSender loraSender;
-LoRaReceiver loraReceiver;
+LoRaDuplex lora;
 USV usv;
 Display display;
 
@@ -27,11 +25,8 @@ void setup()
     // imu.enableDebug();
     // imu.enableInfo();
 
-    loraSender.setup();
+    lora.setup();
     // lora.enableDebug();
-
-    loraReceiver.setup();
-    // loraReceiver.enableDebug();
 
     usv.begin();
 
@@ -50,11 +45,11 @@ void loop()
     // Only send "Hello, World!" once per interval
     if (currentMillis - lastSendTime >= interval)
     {
-        loraSender.sendPacket("Hello, World!");
+        lora.sendPacket("Hello, World!");
         lastSendTime = currentMillis;  // Update the last send time
     }
 
-    loraReceiver.loop();
+    lora.receivePacket();
 
     usv.loop();
 
@@ -67,6 +62,6 @@ void loop()
     display.printf("Gyr: %.2f %.2f %.2f", 2, imuData.gyr.x, imuData.gyr.y, imuData.gyr.z);
     display.printf("Mag: %.2f %.2f %.2f", 3, imuData.mag.x, imuData.mag.y, imuData.mag.z);
     display.printf("Temp: %.2f", 4, imuData.temp);
-    display.printf("LoRaSender: %d", 5, loraSender.getPacketCount());
-    display.printf("LoRaReceiver: %s", 6, loraReceiver.getLastReceivedMessage());
+    display.printf("LoRaSender: %d", 5, lora.getSentPacketCount());
+    display.printf("LoRaReceiver: %s", 6, lora.getLastReceivedMessage());
 }
