@@ -1,3 +1,4 @@
+
 #include <Adafruit_PWMServoDriver.h>
 #include <Wire.h>
 
@@ -27,20 +28,29 @@ void setup()
     pwm.begin();
     pwm.setPWMFreq(PWM_FREQ);  // ESCs expect 50 Hz
 
-    delay(10);
+    pwm.setPWM(ESC_CHANNEL, 0, 1000);
+    delay(2000);
 }
 
 void loop()
 {
-    pwm.setPWM(ESC_CHANNEL, 0, pulseToTicks(1852));  // forward
+    auto ticks = pulseToTicks(2000);
+    Serial.println(ticks);
+    pwm.setPWM(ESC_CHANNEL, 0, ticks);  // forward
     delay(4000);
 
-    pwm.setPWM(ESC_CHANNEL, 0, pulseToTicks(1488));  // stop
+    ticks = pulseToTicks(1500);
+    Serial.println(ticks);
+    pwm.setPWM(ESC_CHANNEL, 0, ticks);  // forward
     delay(4000);
 
-    pwm.setPWM(ESC_CHANNEL, 0, pulseToTicks(1070));  // reverse
+    ticks = pulseToTicks(1000);
+    Serial.println(ticks);
+    pwm.setPWM(ESC_CHANNEL, 0, ticks);  // reverse
     delay(4000);
 
-    pwm.setPWM(ESC_CHANNEL, 0, pulseToTicks(1488));  // stop
+    ticks = pulseToTicks(1500);
+    Serial.println(ticks);
+    pwm.setPWM(ESC_CHANNEL, 0, ticks);  // stop
     delay(4000);
 }

@@ -5,6 +5,7 @@ Servo esc;
 #define MIN_PULSE_WIDTH_uS 1000
 #define MAX_PULSE_WIDTH_uS 2000
 #define PWM_PIN 13
+
 void setup()
 {
     esc.attach(PWM_PIN, MIN_PULSE_WIDTH_uS, MAX_PULSE_WIDTH_uS);
