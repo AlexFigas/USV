@@ -22,23 +22,35 @@ void Thruster::begin()
     Serial.println("Thruster initialized and armed");
 }
 
+void Thruster::front(float speed, float length)
+{
+    setDirection(true);
+    setSpeed(speed);
+}
+
+void Thruster::back(float speed, float length)
+{
+    setDirection(false);
+    setSpeed(speed);
+}
+
+void Thruster::stop()
+{
+    _expander.setPWM(controller.PIN_EN, controller.PWM_STOP_PULSE);
+}
+
 void Thruster::setDirection(bool clockwise)
 {
     if (clockwise)
     {
         _expander.setMinPwmOn(pulseToTicks(controller.PWM_STOP_PULSE));
-        _expander.setMaxPwmOn(pulseToTicks(controller.PWM_MAX_PULSE));
+        _expander.setMaxPwmOn(pulseToTicks(controller.PWM_MIN_PULSE));
     }
     else
     {
         _expander.setMinPwmOn(pulseToTicks(controller.PWM_STOP_PULSE));
-        _expander.setMaxPwmOn(pulseToTicks(controller.PWM_MIN_PULSE));
+        _expander.setMaxPwmOn(pulseToTicks(controller.PWM_MAX_PULSE));
     }
-}
-
-void Thruster::stop()
-{
-    _expander.setDutyCycle(controller.PIN_EN, controller.PWM_STOP_PULSE);
 }
 
 uint16_t Thruster::pulseToTicks(int microseconds)

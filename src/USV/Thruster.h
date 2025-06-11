@@ -39,6 +39,9 @@ class Thruster : public Motor
 
     void setDirection(bool clockwise) override;
 
+    void front(float speed, float length = 0) override;
+    void back(float speed, float length = 0) override;
+
     void stop() override;
 
   private:

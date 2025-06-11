@@ -13,7 +13,8 @@ USV::USV()
 
 void USV::loop()
 {
-    movement.front(50, 100);
+    /** @todo: Add variable for min speed of 25% */
+    movement.front(25, 0);
 }
 
 void USV::begin()
