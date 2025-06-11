@@ -49,7 +49,7 @@ void GPS_BN880::setup()
     }
 
     sc16is750.begin_UART(GPS_BAUD);
-    Serial.println("GPS UART initialized");
+    Serial.println("GPS initialized");
 }
 
 void GPS_BN880::printDebug()

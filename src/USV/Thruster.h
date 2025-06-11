@@ -33,7 +33,7 @@ class Thruster : public Motor
     // Public variables
 
     // Public methods
-    Thruster(Expander expander, const ThrusterController& controller);
+    Thruster(Expander& expander, const ThrusterController& controller);
 
     void begin() override;
 

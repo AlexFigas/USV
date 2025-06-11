@@ -20,7 +20,7 @@ void LoRaDuplex::setup()
     }
 
     LoRa.setSpreadingFactor(12);
-    Serial.println("LoRa Initialized Successfully!");
+    Serial.println("LoRa initialized");
 }
 
 void LoRaDuplex::enableDebug()

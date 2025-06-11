@@ -1,7 +1,8 @@
 #include "USV.h"
 
 USV::USV()
-    : leftController(14, 1000, 2000, 1500, 50),
+    : expander(0x40),
+      leftController(14, 1000, 2000, 1500, 50),
       rightController(15, 1000, 2000, 1500, 50),
       movement(new Thruster[2]{Thruster(expander, leftController), Thruster(expander, rightController)}),
       Robot("usv", &movement),
@@ -12,11 +13,12 @@ USV::USV()
 
 void USV::loop()
 {
-    _movement->front(50, 100);
+    movement.front(50, 100);
 }
 
 void USV::begin()
 {
     Wire.begin(SDA_PIN, SCL_PIN);
     Robot::begin();
+    Serial.println("USV initialized");
 }

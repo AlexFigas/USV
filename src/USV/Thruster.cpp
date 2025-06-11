@@ -1,6 +1,6 @@
 #include "Thruster.h"
 
-Thruster::Thruster(Expander expander, const ThrusterController& controller)
+Thruster::Thruster(Expander& expander, const ThrusterController& controller)
     : Motor(expander, controller), controller(controller)
 {
 }
@@ -10,8 +10,16 @@ Thruster::Thruster(Expander expander, const ThrusterController& controller)
  */
 void Thruster::begin()
 {
-    _expander.setPWM(0, 1000);
+    _expander.begin();
+    _expander.setDutyCycle(controller.PIN_EN, 0);
+    _expander.setPWMFreq(controller.PWM_FREQ);
+    setDirection(true);
+
+    // Arm the thruster
+    _expander.setPWM(controller.PIN_EN, 1000);
     delay(2000);
+
+    Serial.println("Thruster initialized and armed");
 }
 
 void Thruster::setDirection(bool clockwise)

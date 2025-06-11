@@ -17,6 +17,8 @@ void IMU_ICM_20948::setup()
         Serial.println(imu.statusString());
         Serial.println("Retrying...");
     }
+
+    Serial.print(F("IMU initialized"));
 }
 
 // void IMU_ICM_20948::setup()

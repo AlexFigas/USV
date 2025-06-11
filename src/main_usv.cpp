@@ -30,9 +30,9 @@ void setup()
     lora.setup();
     // lora.enableDebug();
 
-    usv.begin();
-
     display.setup();
+
+    usv.begin();
 }
 
 void loop()
