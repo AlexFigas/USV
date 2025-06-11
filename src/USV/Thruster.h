@@ -1,47 +1,54 @@
-// #ifndef THRUSTER_H
-// #define THRUSTER_H
+#ifndef THRUSTER_H
+#define THRUSTER_H
 
-// #include "Motor.h"
+#include "Motor.h"
 
-// struct ThrusterController : public MotorController
-// {
-//     uint16_t PWM_MIN_PULSE = 1000;
-//     uint16_t PWM_MAX_PULSE = 2000;
-//     uint16_t PWM_STOP_PULSE = 1500;
-//     uint8_t PWM_FREQ = 50;  // Hz for ESCs and servos
-//     uint16_t THROTTLE_THRESHOLD = 100;
-// };
+struct ThrusterController : public MotorController
+{
+    uint16_t PWM_MIN_PULSE;
+    uint16_t PWM_MAX_PULSE;
+    uint16_t PWM_STOP_PULSE;
+    uint8_t PWM_FREQ;
 
-// class Thruster : public Motor
-// {
-//   public:
+    ThrusterController(byte pin_en,
+                       uint16_t min_pulse = 1000,
+                       uint16_t max_pulse = 2000,
+                       uint16_t stop_pulse = 1500,
+                       uint8_t freq = 50)
+        : MotorController{pin_en}
+    {
+        PIN_EN = pin_en;
+        PWM_MIN_PULSE = min_pulse;
+        PWM_MAX_PULSE = max_pulse;
+        PWM_STOP_PULSE = stop_pulse;
+        PWM_FREQ = freq;
+    }
+};
 
-//     // Public constants
+class Thruster : public Motor
+{
+  public:
+    // Public constants
 
-//     // Public variables
+    // Public variables
 
-//     // Public methods
-//     Thruster(Expander expander, ThrusterController controller);
+    // Public methods
+    Thruster(Expander expander, const ThrusterController& controller);
 
-//     void setDirection(bool clockwise) override;
+    void begin() override;
 
-//     void front(float speed, float length = 0) override;
+    void setDirection(bool clockwise) override;
 
-//     void back(float speed, float cm = 0) override;
+    void stop() override;
 
-//     void stop() override;
+  private:
+    // Private constants
 
-//     void setSpeed(float speed) override;
+    // Private variables
+    ThrusterController controller;
 
-//     void setPWM(int pwm) override;
+    // Private methods
+    uint16_t pulseToTicks(int microseconds);
+};
 
-//   private:
-//     // Private constants
-
-//     // Private variables
-//     ThrusterController controller;
-
-//     // Private methods
-// };
-
-// #endif
+#endif

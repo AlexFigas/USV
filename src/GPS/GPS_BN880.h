@@ -27,6 +27,9 @@ class GPS_BN880
     void read();
     void printDebug();
 
+    uint16_t GPS_TIMEOUT_TIME_THRESHOLD = 5000;
+    uint8_t GPS_TIMEOUT_CHAR_COUNT = 10;
+
   public:
     GPS_BN880();
     GPS_BN880(int8_t sdaPin, int8_t sclPin);

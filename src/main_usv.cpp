@@ -2,12 +2,14 @@
 #include "Display/Display.h"
 #include "GPS/GPS_BN880.h"
 #include "IMU/IMU_ICM_20948.h"
+#include "USV/Thruster.h"
 #include "USV/USV.h"
 
 GPS_BN880 gps;
 IMU_ICM_20948 imu;
 LoRaDuplex lora;
 USV usv;
+
 Display display;
 
 /// @todo put all strings with an F so they are stored in flash
@@ -18,7 +20,7 @@ const unsigned long interval = 10000;  // 1 second interval (in milliseconds)
 void setup()
 {
     gps.setup();
-    // gps.enableDebug();>
+    // gps.enableDebug();
     // gps.enableInfo();
 
     imu.setup();
