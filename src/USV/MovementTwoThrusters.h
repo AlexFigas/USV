@@ -10,7 +10,6 @@
 #include "Movement.h"
 #include "Thruster.h"
 #include <cmath>
-#include <iostream>
 
 class MovementTwoThrusters : public Movement
 {

@@ -23,9 +23,6 @@ class Display
     uint16_t textColor;
     int cursorX, cursorY;
 
-    unsigned long lastClearTime = 0;
-    bool needsUpdate = false;  // If true, update the display
-
     String buffer;  // Store all text before displaying
 
     int maxCharsPerLine;

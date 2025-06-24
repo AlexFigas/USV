@@ -6,19 +6,20 @@
 
 class USV : public Robot
 {
-  private:
-    Expander expander;
-    ThrusterController leftController;
-    ThrusterController rightController;
-    MovementTwoThrusters movement;
 
   public:
     USV();
+    USV(Expander& expander, ThrusterController& leftController, ThrusterController& rightController);
 
     void loop();
     void begin() override;
 
   private:
+    Expander expander;
+    ThrusterController leftController;
+    ThrusterController rightController;
+    Thruster thrusters[2];
+    MovementTwoThrusters movement;
     const uint8_t SDA_PIN;
     const uint8_t SCL_PIN;
 };

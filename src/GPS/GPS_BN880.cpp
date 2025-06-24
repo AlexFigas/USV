@@ -15,11 +15,11 @@ GPS_BN880::GPS_BN880(int8_t sdaPin, int8_t sclPin, uint8_t i2cAddress, uint32_t 
 }
 
 GPS_BN880::GPS_BN880(int8_t sdaPin, int8_t sclPin, uint8_t i2cAddress, uint32_t crystalFreq, uint32_t gpsBaud)
-    : SDA_PIN(sdaPin),
-      SCL_PIN(sclPin),
-      I2C_ADD(i2cAddress),
+    : GPS_BAUD(gpsBaud),
       CRYSTAL_FREQ(crystalFreq),
-      GPS_BAUD(gpsBaud),
+      I2C_ADD(i2cAddress),
+      SDA_PIN(sdaPin),
+      SCL_PIN(sclPin),
       sc16is750(CRYSTAL_FREQ)
 {
 }

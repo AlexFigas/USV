@@ -8,7 +8,11 @@
 GPS_BN880 gps;
 IMU_ICM_20948 imu;
 LoRaDuplex lora;
-USV usv;
+
+Expander expander(0x40);                                       // Default I2C address for the expander
+ThrusterController leftController(14, 1000, 2000, 1500, 50);   // Pin, min, max, neutral, fq
+ThrusterController rightController(15, 1000, 2000, 1500, 50);  // Pin, min, max, neutral, fq
+USV usv = USV(expander, leftController, rightController);
 
 Display display;
 

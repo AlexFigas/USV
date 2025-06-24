@@ -15,7 +15,13 @@ struct ThrusterController : public MotorController
                        uint16_t max_pulse = 2000,
                        uint16_t stop_pulse = 1500,
                        uint8_t freq = 50)
-        : MotorController{pin_en}
+        : MotorController{
+              .PIN_EN = pin_en,
+              .PIN_IN1 = 0,                  // Not used in Thruster
+              .PIN_IN2 = 0,                  // Not used in Thruster
+              .interrupt = Interrupt{0, 0},  // Not used in Thruster
+              .wheelRadius = 0.0f            // Not used in Thruster
+          }
     {
         PIN_EN = pin_en;
         PWM_MIN_PULSE = min_pulse;
