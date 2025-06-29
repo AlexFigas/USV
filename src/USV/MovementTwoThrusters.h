@@ -14,7 +14,7 @@
 class MovementTwoThrusters : public Movement
 {
   public:
-    MovementTwoThrusters(Thruster* thrusters, float track = 0.0f);
+    MovementTwoThrusters(Thruster* left, Thruster* right, float track = 0.0f);
 
     void curve(float speed, float radius, float angle, bool isLeft = true) override;
 

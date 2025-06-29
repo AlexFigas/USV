@@ -1,24 +1,24 @@
 #include "USV.h"
 
 USV::USV()
-    : expander(0x40),
+    : Robot("usv", &movement),
+      expander(0x40),
       leftController(14, 1000, 2000, 1500, 50),
       rightController(15, 1000, 2000, 1500, 50),
       thrusters{Thruster(expander, leftController), Thruster(expander, rightController)},
       movement(thrusters, /*track=unused*/ 0.0f),
-      Robot("usv", &movement),
       SDA_PIN(21),
       SCL_PIN(22)
 {
 }
 
 USV::USV(Expander& expander, ThrusterController& leftController, ThrusterController& rightController)
-    : expander(expander),
+    : Robot("usv", &movement),
+      expander(expander),
       leftController(leftController),
       rightController(rightController),
       thrusters{Thruster(expander, leftController), Thruster(expander, rightController)},
-      movement(thrusters, /*track=*/0.0f),
-      Robot("usv", &movement),
+      movement(&thrusters[0], &thrusters[1], /*track=unused*/ 0.0f),  // test this
       SDA_PIN(21),
       SCL_PIN(22)
 {

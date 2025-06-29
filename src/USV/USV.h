@@ -6,7 +6,6 @@
 
 class USV : public Robot
 {
-
   public:
     USV();
     USV(Expander& expander, ThrusterController& leftController, ThrusterController& rightController);
