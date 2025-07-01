@@ -9,9 +9,9 @@
 #define BOARD_NAME ARDUINO_BOARD
 
 // Includes for WiFi and asyncronous Web Server
+#include <ESPmDNS.h>
 #include <WiFi.h>
 #include <WiFiMulti.h>
-#include <ESPmDNS.h>
 
 // #include <esp_wpa2.h>
 // #include <esp_eap_client.h>
@@ -40,7 +40,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <ESP8266mDNS.h>
-
 #include <ESPAsyncTCP.h>
 
 typedef ESP8266WiFiMulti WiFiMulti;

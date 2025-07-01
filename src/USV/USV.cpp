@@ -27,7 +27,30 @@ USV::USV(Expander& expander, ThrusterController& leftController, ThrusterControl
 void USV::loop()
 {
     /** @todo: Add variable for min speed of 25% */
-    movement.front(5, 0);
+    Serial.println("Front");
+    movement.front(25, 0);
+    delay(1000);
+    Serial.println("Stop");
+    movement.stop();
+    delay(1000);
+    Serial.println("Back");
+    movement.back(25, 0);
+    delay(1000);
+    Serial.println("Stop");
+    movement.stop();
+    delay(1000);
+    Serial.println("Left");
+    movement.left(25, 0, 0);
+    delay(1000);
+    Serial.println("Stop");
+    movement.stop();
+    delay(1000);
+    Serial.println("Right");
+    movement.right(25, 0, 0);
+    delay(1000);
+    Serial.println("Stop");
+    movement.stop();
+    delay(1000);
 }
 
 void USV::begin()
