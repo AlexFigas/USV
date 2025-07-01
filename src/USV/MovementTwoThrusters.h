@@ -17,16 +17,13 @@ class MovementTwoThrusters : public Movement
     MovementTwoThrusters(Thruster* left, Thruster* right, float track = 0.0f);
 
     void curve(float speed, float radius, float angle, bool isLeft = true) override;
-
     void left(float speed, float radius, float angle) override;
-
     void right(float speed, float radius, float angle) override;
-
     void directionCurveCalibration() override;
-
     void directionLineCalibration() override;
 
   private:
+    Thruster* thrusters[2];
 };
 
 #endif

@@ -6,7 +6,7 @@ USV::USV()
       leftController(14, 1000, 2000, 1500, 50),
       rightController(15, 1000, 2000, 1500, 50),
       thrusters{Thruster(expander, leftController), Thruster(expander, rightController)},
-      movement(thrusters, /*track=unused*/ 0.0f),
+      movement(&thrusters[MOTOR_LEFT], &thrusters[MOTOR_RIGHT], /*track=unused*/ 0.0f),
       SDA_PIN(21),
       SCL_PIN(22)
 {
@@ -18,7 +18,7 @@ USV::USV(Expander& expander, ThrusterController& leftController, ThrusterControl
       leftController(leftController),
       rightController(rightController),
       thrusters{Thruster(expander, leftController), Thruster(expander, rightController)},
-      movement(&thrusters[0], &thrusters[1], /*track=unused*/ 0.0f),  // test this
+      movement(&thrusters[MOTOR_LEFT], &thrusters[MOTOR_RIGHT], /*track=unused*/ 0.0f),
       SDA_PIN(21),
       SCL_PIN(22)
 {
