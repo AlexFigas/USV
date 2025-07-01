@@ -12,6 +12,8 @@ class USV : public Robot
 
     void loop();
     void begin() override;
+    void stop();
+    void setCourse(double bearingError);
 
   private:
     Expander expander;

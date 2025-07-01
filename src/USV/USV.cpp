@@ -59,3 +59,26 @@ void USV::begin()
     Robot::begin();
     Serial.println("USV initialized");
 }
+
+void USV::stop()
+{
+    movement.stop();
+}
+
+void USV::setCourse(double bearingError)
+{
+    if (bearingError > 0)
+    {
+        movement.right(60, 0, bearingError);
+        movement.left(40, 0, bearingError);
+    }
+    else if (bearingError < 0)
+    {
+        movement.left(60, 0, -bearingError);
+        movement.right(40, 0, -bearingError);
+    }
+    else
+    {
+        movement.stop();
+    }
+}
