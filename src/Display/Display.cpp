@@ -86,3 +86,11 @@ void Display::printLine(String& str, int line)
     display->print(str);
     display->display();
 }
+
+void Display::clear()
+{
+    display->clearDisplay();
+    cursorX = 0;
+    cursorY = 0;
+    display->display();
+}

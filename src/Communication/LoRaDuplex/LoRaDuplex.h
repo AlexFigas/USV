@@ -16,11 +16,13 @@ class LoRaDuplex
 
     // Receiver
     void receivePacket();
+    size_t receivePacket(uint8_t* buffer, size_t maxLength);
     String getLastReceivedMessage();
     int getReceivedPacketCount();
 
     // Sender
     bool sendPacket(const String& message);
+    bool sendPacket(const uint8_t* data, size_t length);
     int getSentPacketCount();
 
   private:

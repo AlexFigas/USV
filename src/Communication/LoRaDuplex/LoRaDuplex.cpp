@@ -88,6 +88,25 @@ void LoRaDuplex::receivePacket()
     }
 }
 
+size_t LoRaDuplex::receivePacket(uint8_t* buffer, size_t maxLength)
+{
+    if (debug)
+        printDebug();
+
+    int packetSize = LoRa.parsePacket();
+    if (packetSize > 0)
+    {
+        receivedCount++;
+        size_t len = 0;
+        while (LoRa.available() && len < maxLength)
+        {
+            buffer[len++] = LoRa.read();
+        }
+        return len;
+    }
+    return 0;
+}
+
 String LoRaDuplex::getLastReceivedMessage()
 {
     return lastReceivedMessage;
@@ -111,6 +130,18 @@ bool LoRaDuplex::sendPacket(const String& message)
         return true;
     }
     return false;
+}
+
+bool LoRaDuplex::sendPacket(const uint8_t* data, size_t length)
+{
+    if (debug)
+        printDebug();
+
+    LoRa.beginPacket();
+    LoRa.write(data, length);  // Send raw bytes
+    LoRa.endPacket(true);
+    sentCount++;
+    return true;
 }
 
 int LoRaDuplex::getSentPacketCount()

@@ -13,6 +13,7 @@ class Display
 
     void setup();
     void printf(const char* format, int line, ...);
+    void clear();
 
   private:
     int width, height, rstPin, sdaPin, sclPin;

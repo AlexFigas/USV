@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+message StateMessage
+{
+    enum State
+    {
+        NONE = 0;
+        MANUAL = 1;
+        AUTOMATIC = 2;
+    }
+    State state = 1;
+}
+
+message Waypoint
+{
+    double lat = 1;
+    double lng = 2;
+}
+
+message WaypointsMessage
+{
+    repeated Waypoint waypoints = 1;
+}
