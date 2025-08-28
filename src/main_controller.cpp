@@ -1,55 +1,96 @@
-// #include "Communication/LoRaDuplex/LoRaDuplex.h"
-// #include "Display/Display.h"
+#include "Communication/LoRaDuplex/LoRaDuplex.h"
+#include "Display/Display.h"
+#include "USV.pb.h"
+#include "pb_encode.h"
+#include <Arduino.h>
 
-// LoRaDuplex lora;
-// Display display;
+Display display;
+LoRaDuplex lora;
 
-// String currentMessage = "";  // Store the message as the user types
+// Callback for encoding waypoints (for nanopb repeated fields)
+bool waypoints_encode_callback(pb_ostream_t* stream, const pb_field_t* field, void* const* arg)
+{
+    const Waypoint* waypoints = (const Waypoint*)(*arg);
+    for (int i = 0; i < 2; ++i)
+    {
+        if (!pb_encode_tag_for_field(stream, field))
+            return false;
+        if (!pb_encode_submessage(stream, Waypoint_fields, &waypoints[i]))
+            return false;
+    }
+    return true;
+}
 
-// void setup()
-// {
-//     Serial.begin(115200);  // Initialize serial communication
-//     lora.setup();          // Setup LoRa sender
-//     display.setup();       // Setup display
+void send_state_message(StateMessage_State state)
+{
+    StateMessage msg = StateMessage_init_zero;
+    msg.state = state;
 
-//     // Display a welcome message and instructions
-//     Serial.println("LoRa Communication System");
-//     Serial.println("Type your message and press Enter to send it.");
-//     display.printf("LoRa System Ready", 0);  // Display readiness message on the screen
-// }
+    uint8_t buffer[32];
+    pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+    if (pb_encode(&stream, StateMessage_fields, &msg))
+    {
+        lora.sendPacket(buffer, stream.bytes_written);
+        display.printf("Sent State: %s", 0, state == StateMessage_State_MANUAL ? "MANUAL" : "AUTO");
+    }
+    else
+    {
+        display.printf("State encode fail", 0);
+    }
+}
 
-// void loop()
-// {
-//     // Check if there is any input from the user
-//     if (Serial.available() > 0)
-//     {
-//         char incomingChar = Serial.read();  // Read a single character
+void send_waypoints_message()
+{
+    WaypointsMessage msg = WaypointsMessage_init_zero;
+    static Waypoint waypoints[2] = {{.lat = 38.7169, .lng = -9.1399}, {.lat = 40.4168, .lng = -3.7038}};
+    msg.waypoints.arg = waypoints;
+    msg.waypoints.funcs.encode = waypoints_encode_callback;
 
-//         // If the character is a newline (Enter), send the message
-//         if (incomingChar == '\n')
-//         {
-//             if (currentMessage.length() > 0)
-//             {
-//                 // Send the message via LoRa
-//                 lora.sendPacket(currentMessage);
+    uint8_t buffer[128];
+    pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+    if (pb_encode(&stream, WaypointsMessage_fields, &msg))
+    {
+        lora.sendPacket(buffer, stream.bytes_written);
+        display.printf("Sent 2 waypoints", 1);
+        display.printf("WP1: %.6f,%.6f", 2, waypoints[0].lat, waypoints[0].lng);
+        display.printf("WP2: %.6f,%.6f", 3, waypoints[1].lat, waypoints[1].lng);
+    }
+    else
+    {
+        display.printf("WP encode fail", 1);
+    }
+}
 
-//                 // Provide feedback to the user
-//                 Serial.print("Message sent: ");
-//                 Serial.println(currentMessage);
-//                 Serial.println("Type another message.");
+void setup()
+{
+    display.setup();
+    lora.setup();
+    delay(100);
+}
 
-//                 // Display the sent message on the screen
-//                 display.printf("Sent: %s", 0, currentMessage.c_str());
-
-//                 currentMessage = "";  // Reset the message after sending
-//             }
-//         }
-//         // If the character is not Enter, add it to the current message
-//         else
-//         {
-//             currentMessage += incomingChar;
-
-//             display.printf("Typing: %s", 0, currentMessage.c_str());
-//         }
-//     }
-// }
+void loop()
+{
+    static bool toggle = false;
+    static bool state = false;
+    if (toggle)
+    {
+        if (state)
+        {
+            send_state_message(StateMessage_State_MANUAL);
+            display.printf("State: %s", 0, "MANUAL");
+        }
+        else
+        {
+            send_state_message(StateMessage_State_AUTOMATIC);
+            display.printf("State: %s", 0, "AUTOMATIC");
+        }
+        state = !state;
+    }
+    else
+    {
+        send_waypoints_message();
+    }
+    toggle = !toggle;
+    delay(5000);
+    display.clear();
+}

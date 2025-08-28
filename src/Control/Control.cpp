@@ -1,5 +1,4 @@
 #include "Control.h"
-#include <cmath>
 
 constexpr double EARTH_RADIUS_METERS = 6371000.0;
 constexpr double MIN_SATELLITES = 4;
@@ -7,69 +6,128 @@ constexpr double MAX_HDOP = 2.5;
 constexpr double SPEED_THRESHOLD = 1.0;  // km/h
 constexpr double SMOOTHING_ALPHA = 0.2;
 
-Control::Control(USV& usv) : usv(usv), waypointThreshold(5.0), currentWaypoint(0), lastBearingError(0.0) {}
-
-void Control::setWaypoints(const std::vector<Waypoint>& waypoints)
+Control::Control(Movement& movement)
+    : movement(movement),
+      waypointThreshold(5.0),
+      currentWaypoint(0),
+      lastBearingError(0.0),
+      distanceToWaypoint(0.0),
+      bearingToWaypoint(0.0),
+      heading(0.0)
 {
-    this->waypoints = waypoints;
-    currentWaypoint = 0;
+}
+
+void Control::setWaypoints(const Waypoint waypoints[], size_t size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        bool exists = false;
+
+        // Check if this waypoint is already in the vector
+        for (const auto& wp : this->waypoints)
+        {
+            if (wp.lat == waypoints[i].lat && wp.lng == waypoints[i].lng)
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        // Only add it if it doesn't exist
+        if (!exists)
+        {
+            this->waypoints.push_back(waypoints[i]);
+        }
+    }
+}
+
+void Control::setState(StateMessage_State state)
+{
+    this->state = state;
+}
+
+StateMessage_State Control::getState() const
+{
+    return state;
 }
 
 void Control::update(GPSData& gps, const IMUData& imu)
 {
+    // If all waypoints reached, stop and exit
     if (currentWaypoint >= waypoints.size())
     {
-        usv.stop();
+        movement.stop();
         return;
     }
 
-    // // Skip update if GPS quality is poor
-    // if (!gps.hdop.isValid() || gps.hdop.hdop() > MAX_HDOP ||
-    //     !gps.satellites.isValid() || gps.satellites.value() < MIN_SATELLITES) {
-    //     usv.stop();
-    //     return;
-    // }
+    // Compute navigation data
+    distanceToWaypoint = computeDistance(gps, waypoints[currentWaypoint]);
+    bearingToWaypoint = computeBearing(gps, waypoints[currentWaypoint]);
 
-    // // Skip control if not moving
-    // if (!gps.speed.isValid() || gps.speed.kmph() < SPEED_THRESHOLD) {
-    //     usv.stop();
-    //     return;
-    // }
-
-    double distance = computeDistance(gps, waypoints[currentWaypoint]);
-    double targetBearing = computeBearing(gps, waypoints[currentWaypoint]);
-
-    if (distance < waypointThreshold)
+    // Advance to next waypoint if close enough
+    if (distanceToWaypoint < waypointThreshold)
     {
         currentWaypoint++;
         return;
     }
 
-    double heading;
-
-    // Prefer IMU yaw, fallback to GPS course if moving fast enough
+    // Prefer GPS heading if moving fast enough
     if (gps.course.isValid() && gps.speed.kmph() >= SPEED_THRESHOLD)
-    {
         heading = gps.course.deg();
-    }
     else
-    {
         heading = imu.ypr.yaw;
-    }
 
-    double bearingError = targetBearing - heading;
-
-    // Normalize error to [-180, 180]
+    // Compute smoothed bearing error
+    double bearingError = bearingToWaypoint - heading;
     while (bearingError > 180.0)
         bearingError -= 360.0;
     while (bearingError < -180.0)
         bearingError += 360.0;
-
-    // Smooth bearing error (low-pass filter)
     bearingError = (1 - SMOOTHING_ALPHA) * lastBearingError + SMOOTHING_ALPHA * bearingError;
     lastBearingError = bearingError;
+}
 
-    usv.setCourse(bearingError);
+void Control::control()
+{
+    if (state == StateMessage_State_AUTOMATIC)
+        automaticControl();
+    else if (state == StateMessage_State_MANUAL)
+        manualControl();
+}
+
+void Control::automaticControl()
+{
+    if (currentWaypoint >= waypoints.size())
+    {
+        movement.stop();
+        return;
+    }
+    setCourse(lastBearingError);
+}
+
+void Control::setCourse(int bearingError)
+{
+    if (bearingError > 0)
+    {
+        movement.right(60, 0, bearingError);
+        movement.left(40, 0, bearingError);
+    }
+    else if (bearingError < 0)
+    {
+        movement.left(60, 0, -bearingError);
+        movement.right(40, 0, -bearingError);
+    }
+    else
+    {
+        movement.stop();
+    }
+}
+
+void Control::manualControl()
+{
+    /// @todo
+    // Here you would handle manual control commands
+    // For example, based on RC input or joystick
 }
 
 double Control::computeDistance(GPSData& gps, const Waypoint& wp)
@@ -100,5 +158,5 @@ double Control::computeBearing(GPSData& gps, const Waypoint& wp)
     double y = std::cos(lat1) * std::sin(lat2) - std::sin(lat1) * std::cos(lat2) * std::cos(dlon);
 
     double bearing = std::atan2(x, y) * RAD_TO_DEG;
-    return fmod((bearing + 360.0), 360.0);  // Normalize to [0, 360)
+    return fmod((bearing + 360.0), 360.0);
 }
