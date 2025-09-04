@@ -17,7 +17,7 @@ class LoRaProto
     void enableDebug();
 
     void sendStateMessage(StateMessage_State state);
-    void sendWaypointsMessage();
+    void sendWaypointsMessage(Waypoint* waypoints, size_t count);
 
     void receive();
 
@@ -36,7 +36,8 @@ class LoRaProto
     static bool waypointsEncodeCallback(pb_ostream_t* stream, const pb_field_t* field, void* const* arg);
     static bool waypointsDecodeCallback(pb_istream_t* stream, const pb_field_t* field, void** arg);
 
-    Waypoint waypoints[6];
+    static const size_t MAX_WAYPOINTS = 6;
+    Waypoint waypoints[MAX_WAYPOINTS];
 
     static const uint8_t BUFFER_SIZE = 128;
 

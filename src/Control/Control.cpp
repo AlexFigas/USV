@@ -67,6 +67,18 @@ void Control::update(GPSData& gps, const IMUData& imu)
     // Advance to next waypoint if close enough
     if (distanceToWaypoint < waypointThreshold)
     {
+        // Testing Only
+        movement.stop();
+        delay(500);
+        movement.front(100, 0);
+        delay(500);
+        movement.stop();
+        delay(500);
+        movement.back(100, 0);
+        delay(500);
+        movement.stop();
+        delay(500);
+
         currentWaypoint++;
         return;
     }
@@ -90,14 +102,20 @@ void Control::update(GPSData& gps, const IMUData& imu)
 void Control::control()
 {
     if (state == StateMessage_State_AUTOMATIC)
+    {
         automaticControl();
+        Serial.println("Automatic control active");
+    }
     else if (state == StateMessage_State_MANUAL)
+    {
         manualControl();
+        Serial.println("Manual control active");
+    }
 }
 
 void Control::automaticControl()
 {
-    if (currentWaypoint >= waypoints.size())
+    if (currentWaypoint >= waypoints.size() && waypoints.size() > 0)
     {
         movement.stop();
         return;
@@ -127,7 +145,8 @@ void Control::manualControl()
 {
     /// @todo
     // Here you would handle manual control commands
-    // For example, based on RC input or joystick
+    // For example, based on RC input or joystick>
+    movement.stop();
 }
 
 double Control::computeDistance(GPSData& gps, const Waypoint& wp)

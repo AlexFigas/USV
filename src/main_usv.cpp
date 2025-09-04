@@ -9,9 +9,9 @@
 GPS_BN880 gps;
 IMU_ICM_20948 imu;
 
-Expander expander(0x40);                                       // Default I2C address for the expander
-ThrusterController leftController(14, 1000, 2000, 1500, 50);   // Pin, min, max, neutral, fq
-ThrusterController rightController(15, 1000, 2000, 1500, 50);  // Pin, min, max, neutral, fq
+Expander expander(0x40);                                                // Default I2C address for the expander
+ThrusterController leftController(14, 1000, 2000, 1500, 50, "left");    // Pin, min, max, neutral, fq
+ThrusterController rightController(15, 1000, 2000, 1500, 50, "right");  // Pin, min, max, neutral, fq
 USV usv = USV(expander, leftController, rightController);
 
 Display display;
@@ -23,6 +23,8 @@ const unsigned long interval = 10000;  // 1 second interval (in milliseconds)
 
 void setup()
 {
+    delay(2000);
+
     Serial.begin(115200);
 
     gps.setup();
@@ -54,7 +56,8 @@ void loop()
     IMUData imuData = imu.getIMUData();
     usv.loop(gpsData, imuData);
 
-    display.printf("GPS: %.2f %.2f %.2f", 0, gpsData.location.lat(), gpsData.location.lng(), gpsData.altitude.meters());
+    display.printf(
+        "%.6f %.6f", 0, gpsData.location.lat(), gpsData.location.lng() /*, gpsData.altitude.meters() // Altitude */);
     display.printf("Acc: %.2f %.2f %.2f", 1, imuData.acc.x, imuData.acc.y, imuData.acc.z);
     display.printf("Gyr: %.2f %.2f %.2f", 2, imuData.gyr.x, imuData.gyr.y, imuData.gyr.z);
     display.printf("Mag: %.2f %.2f %.2f", 3, imuData.mag.x, imuData.mag.y, imuData.mag.z);

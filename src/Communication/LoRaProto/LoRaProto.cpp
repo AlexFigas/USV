@@ -43,7 +43,7 @@ bool LoRaProto::waypointsDecodeCallback(pb_istream_t* stream, const pb_field_t* 
 bool LoRaProto::waypointsEncodeCallback(pb_ostream_t* stream, const pb_field_t* field, void* const* arg)
 {
     const Waypoint* waypoints = (const Waypoint*)(*arg);
-    for (int i = 0; i < 2; ++i)
+    for (int i = 0; i < MAX_WAYPOINTS; ++i)
     {
         if (!pb_encode_tag_for_field(stream, field))
             return false;
@@ -53,15 +53,20 @@ bool LoRaProto::waypointsEncodeCallback(pb_ostream_t* stream, const pb_field_t* 
     return true;
 }
 
-void LoRaProto::sendWaypointsMessage()
+void LoRaProto::sendWaypointsMessage(Waypoint* waypoints, size_t count)
 {
+    if (count > MAX_WAYPOINTS)
+        count = MAX_WAYPOINTS;  // limit to max waypoints
+
     WaypointsMessage msg = WaypointsMessage_init_zero;
-    static Waypoint waypoints[2] = {{.lat = 38.7169, .lng = -9.1399}, {.lat = 40.4168, .lng = -3.7038}};
+
+    // Attach external waypoints
     msg.waypoints.arg = waypoints;
     msg.waypoints.funcs.encode = &LoRaProto::waypointsEncodeCallback;
 
     uint8_t buffer[BUFFER_SIZE];
     pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+
     if (pb_encode(&stream, WaypointsMessage_fields, &msg))
     {
         lora.sendPacket(buffer, stream.bytes_written);
