@@ -1,3 +1,4 @@
+#include "Communication/Led/Led.h"
 #include "Communication/LoRaDuplex/LoRaDuplex.h"
 #include "Communication/LoRaProto/LoRaProto.h"
 #include "Display/Display.h"
@@ -12,7 +13,10 @@ IMU_ICM_20948 imu;
 Expander expander(0x40);                                                // Default I2C address for the expander
 ThrusterController leftController(14, 1000, 2000, 1500, 50, "left");    // Pin, min, max, neutral, fq
 ThrusterController rightController(15, 1000, 2000, 1500, 50, "right");  // Pin, min, max, neutral, fq
-USV usv = USV(expander, leftController, rightController);
+Led yellow(expander, 7);                                                // Manual
+Led green(expander, 11);                                                // Automatic
+// Led red(expander, 3); // Error
+USV usv = USV(expander, leftController, rightController, yellow, green);
 
 Display display;
 

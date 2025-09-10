@@ -1,6 +1,7 @@
 #ifndef CONTROL_H
 #define CONTROL_H
 
+#include "Communication/Led/Led.h"
 #include "GPS/GPSData.h"
 #include "IMU/IMUData.h"
 #include "Movement.h"
@@ -11,7 +12,7 @@
 class Control
 {
   public:
-    Control(Movement& movement);
+    Control(Movement& movement, Led& automaticLed, Led& manualLed);
 
     void setWaypoints(const Waypoint waypoints[], size_t size);
     void setState(StateMessage_State state);
@@ -46,7 +47,11 @@ class Control
     double bearingToWaypoint = 0.0;
     double heading = 0.0;
 
+    Led& automaticLed;
+    Led& manualLed;
+
     StateMessage_State state = StateMessage_State_MANUAL;
+    StateMessage_State lastState = StateMessage_State_NONE;
 };
 
 #endif  // CONTROL_H

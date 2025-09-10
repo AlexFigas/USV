@@ -6,8 +6,10 @@ constexpr double MAX_HDOP = 2.5;
 constexpr double SPEED_THRESHOLD = 1.0;  // km/h
 constexpr double SMOOTHING_ALPHA = 0.2;
 
-Control::Control(Movement& movement)
+Control::Control(Movement& movement, Led& automaticLed, Led& manualLed)
     : movement(movement),
+      automaticLed(automaticLed),
+      manualLed(manualLed),
       waypointThreshold(5.0),
       currentWaypoint(0),
       lastBearingError(0.0),
@@ -19,6 +21,9 @@ Control::Control(Movement& movement)
 
 void Control::setWaypoints(const Waypoint waypoints[], size_t size)
 {
+    automaticLed.blink(3000, 500);
+    manualLed.blink(3000, 500);
+
     for (size_t i = 0; i < size; i++)
     {
         bool exists = false;
@@ -67,17 +72,7 @@ void Control::update(GPSData& gps, const IMUData& imu)
     // Advance to next waypoint if close enough
     if (distanceToWaypoint < waypointThreshold)
     {
-        // Testing Only
-        movement.stop();
-        delay(500);
-        movement.front(100, 0);
-        delay(500);
-        movement.stop();
-        delay(500);
-        movement.back(100, 0);
-        delay(500);
-        movement.stop();
-        delay(500);
+        automaticLed.blink(2000, 250);
 
         currentWaypoint++;
         return;
@@ -103,13 +98,25 @@ void Control::control()
 {
     if (state == StateMessage_State_AUTOMATIC)
     {
+        if (lastState != state)
+        {
+            automaticLed.on();
+            manualLed.off();
+            lastState = state;
+        }
+
         automaticControl();
-        Serial.println("Automatic control active");
     }
     else if (state == StateMessage_State_MANUAL)
     {
+        if (lastState != state)
+        {
+            automaticLed.off();
+            manualLed.on();
+            lastState = state;
+        }
+
         manualControl();
-        Serial.println("Manual control active");
     }
 }
 
@@ -117,6 +124,7 @@ void Control::automaticControl()
 {
     if (currentWaypoint >= waypoints.size() && waypoints.size() > 0)
     {
+        automaticLed.blink(2000, 100);
         movement.stop();
         return;
     }

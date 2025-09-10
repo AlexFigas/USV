@@ -3,6 +3,7 @@
 
 #include "Control/Control.h"
 #include "MovementTwoThrusters.h"
+#include <Communication/Led/Led.h>
 #include <Communication/LoRaDuplex/LoRaDuplex.h>
 #include <Communication/LoRaProto/LoRaProto.h>
 #include <Robot.h>
@@ -11,8 +12,11 @@
 class USV : public Robot
 {
   public:
-    USV();
-    USV(Expander& expander, ThrusterController& leftController, ThrusterController& rightController);
+    USV(Expander& expander,
+        ThrusterController& leftController,
+        ThrusterController& rightController,
+        Led& automaticLed,
+        Led& manualLed);
 
     void loop(GPSData& gpsData, IMUData& imuData);
     void begin() override;
@@ -21,9 +25,11 @@ class USV : public Robot
     LoRaProto& getLoRaProto();
 
   private:
-    Expander expander;
-    ThrusterController leftController;
-    ThrusterController rightController;
+    Expander& expander;
+    ThrusterController& leftController;
+    ThrusterController& rightController;
+    Led& automaticLed;
+    Led& manualLed;
     Thruster thrusters[2];
     MovementTwoThrusters movement;
     Control control;
