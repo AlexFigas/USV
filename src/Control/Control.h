@@ -15,7 +15,7 @@ class Control
     Control(Movement& movement, Led& automaticLed, Led& manualLed);
 
     void setWaypoints(const Waypoint waypoints[], size_t size);
-    void setState(StateMessage_State state);
+    void setState(StateMessage_State state, StateMessage_Manual_State manualState);
     StateMessage_State getState() const;
 
     // Update navigation data from sensors
@@ -27,7 +27,7 @@ class Control
   private:
     // Control modes
     void automaticControl();
-    void manualControl();
+    void manualControl(StateMessage_Manual_State manualState);
 
     // Navigation helpers
     double computeDistance(GPSData& gps, const Waypoint& wp);
@@ -38,7 +38,7 @@ class Control
   private:
     Movement& movement;
     std::vector<Waypoint> waypoints;
-    double waypointThreshold = 5.0;  // meters
+    double waypointThreshold = 3.0;  // meters
     size_t currentWaypoint = 0;
 
     // Navigation state
@@ -50,8 +50,12 @@ class Control
     Led& automaticLed;
     Led& manualLed;
 
+    /// @todo if we have time replace with StateStruct
     StateMessage_State state = StateMessage_State_MANUAL;
+    StateMessage_Manual_State manualState = StateMessage_Manual_State_NONE;
+
     StateMessage_State lastState = StateMessage_State_NONE;
+    StateMessage_Manual_State manualCommand = StateMessage_Manual_State_NONE;
 };
 
 #endif  // CONTROL_H

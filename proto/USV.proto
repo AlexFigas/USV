@@ -9,6 +9,22 @@ message StateMessage
         AUTOMATIC = 2;
     }
     State state = 1;
+
+    message Manual
+    {
+        enum State
+        {
+            NONE = 0;
+            FORWARD = 1;
+            BACKWARD = 2;
+            LEFT = 3;
+            RIGHT = 4;
+            STOP = 5;
+        }
+        State state = 1;
+    }
+
+    Manual manual = 2;
 }
 
 message Waypoint

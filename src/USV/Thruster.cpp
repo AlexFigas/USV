@@ -27,13 +27,13 @@ void Thruster::begin()
 
 void Thruster::front(float speed, float length)
 {
-    setDirection(true);
+    setDirection(false);
     setSpeed(speed);
 }
 
 void Thruster::back(float speed, float length)
 {
-    setDirection(false);
+    setDirection(true);
     setSpeed(speed);
 }
 

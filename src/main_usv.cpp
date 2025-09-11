@@ -16,7 +16,7 @@ ThrusterController rightController(15, 1000, 2000, 1500, 50, "right");  // Pin, 
 Led yellow(expander, 7);                                                // Manual
 Led green(expander, 11);                                                // Automatic
 // Led red(expander, 3); // Error
-USV usv = USV(expander, leftController, rightController, yellow, green);
+USV usv = USV(expander, leftController, rightController, green, yellow);
 
 Display display;
 

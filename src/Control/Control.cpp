@@ -46,9 +46,10 @@ void Control::setWaypoints(const Waypoint waypoints[], size_t size)
     }
 }
 
-void Control::setState(StateMessage_State state)
+void Control::setState(StateMessage_State state, StateMessage_Manual_State manualState)
 {
     this->state = state;
+    this->manualState = manualState;
 }
 
 StateMessage_State Control::getState() const
@@ -116,7 +117,7 @@ void Control::control()
             lastState = state;
         }
 
-        manualControl();
+        manualControl(manualState);
     }
 }
 
@@ -135,13 +136,13 @@ void Control::setCourse(int bearingError)
 {
     if (bearingError > 0)
     {
-        movement.right(60, 0, bearingError);
-        movement.left(40, 0, bearingError);
+        movement.right(100, 0, bearingError);
+        movement.left(50, 0, bearingError);
     }
     else if (bearingError < 0)
     {
-        movement.left(60, 0, -bearingError);
-        movement.right(40, 0, -bearingError);
+        movement.left(100, 0, -bearingError);
+        movement.right(50, 0, -bearingError);
     }
     else
     {
@@ -149,12 +150,28 @@ void Control::setCourse(int bearingError)
     }
 }
 
-void Control::manualControl()
+void Control::manualControl(StateMessage_Manual_State manualState)
 {
-    /// @todo
-    // Here you would handle manual control commands
-    // For example, based on RC input or joystick>
-    movement.stop();
+    switch (manualState)
+    {
+        case StateMessage_Manual_State_FORWARD:
+            movement.front(100, 0);
+            break;
+        case StateMessage_Manual_State_BACKWARD:
+            movement.back(100, 0);
+            break;
+        case StateMessage_Manual_State_LEFT:
+            movement.left(100, 0, 0);
+            break;
+        case StateMessage_Manual_State_RIGHT:
+            movement.right(100, 0, 0);
+            break;
+        case StateMessage_Manual_State_STOP:
+        case StateMessage_Manual_State_NONE:
+        default:
+            movement.stop();
+            break;
+    }
 }
 
 double Control::computeDistance(GPSData& gps, const Waypoint& wp)

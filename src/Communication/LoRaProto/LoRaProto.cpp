@@ -12,10 +12,15 @@ void LoRaProto::enableDebug()
     lora.enableDebug();
 }
 
-void LoRaProto::sendStateMessage(StateMessage_State state)
+void LoRaProto::sendStateMessage(StateMessage_State state, StateMessage_Manual_State manualState)
 {
     StateMessage msg = StateMessage_init_zero;
     msg.state = state;
+
+    if (state == StateMessage_State_MANUAL)
+    {
+        msg.manual.state = manualState;
+    }
 
     uint8_t buffer[BUFFER_SIZE];
     pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
@@ -97,20 +102,44 @@ void LoRaProto::receive()
     pb_istream_t stream = pb_istream_from_buffer(buffer, msg_size);
     if (pb_decode(&stream, StateMessage_fields, &stateMsg))
     {
-        if (stateMsg.state == StateMessage_State::StateMessage_State_AUTOMATIC)
+        if (stateMsg.state == StateMessage_State_AUTOMATIC)
         {
-            lastReceivedMessage = "SM: state=AUTOMATIC";
+            lastReceivedMessage = "SM: s=A";
         }
-        else
+        else if (stateMsg.state == StateMessage_State_MANUAL)
         {
-            lastReceivedMessage = "SM: state=MANUAL";
+            lastReceivedMessage = "SM: s=M";
+
+            // Access nested manual state
+            switch (stateMsg.manual.state)
+            {
+                case StateMessage_Manual_State_FORWARD:
+                    lastReceivedMessage += " (F)";
+                    break;
+                case StateMessage_Manual_State_BACKWARD:
+                    lastReceivedMessage += " (B)";
+                    break;
+                case StateMessage_Manual_State_LEFT:
+                    lastReceivedMessage += " (L)";
+                    break;
+                case StateMessage_Manual_State_RIGHT:
+                    lastReceivedMessage += " (R)";
+                    break;
+                case StateMessage_Manual_State_STOP:
+                    lastReceivedMessage += " (S)";
+                    break;
+                case StateMessage_Manual_State_NONE:
+                default:
+                    lastReceivedMessage += " (N)";
+                    break;
+            }
         }
 
-        control.setState(stateMsg.state);
+        control.setState(stateMsg.state, stateMsg.manual.state);
         return;
     }
 
-    // Try to decode as WaypointsMessage using callback
+    // Try to decode as WaypointsMessage
     WaypointsMessage waypointsMsg = WaypointsMessage_init_zero;
     stream = pb_istream_from_buffer(buffer, msg_size);
     size_t idx = 1;

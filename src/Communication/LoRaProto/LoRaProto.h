@@ -16,7 +16,7 @@ class LoRaProto
     void setup();
     void enableDebug();
 
-    void sendStateMessage(StateMessage_State state);
+    void sendStateMessage(StateMessage_State state, StateMessage_Manual_State manualState);
     void sendWaypointsMessage(Waypoint* waypoints, size_t count);
 
     void receive();

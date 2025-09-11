@@ -31,6 +31,7 @@ void send_state_message(StateMessage_State state)
     if (pb_encode(&stream, StateMessage_fields, &msg))
     {
         lora.sendPacket(buffer, stream.bytes_written);
+
         display.printf("Sent State: %s", 0, state == StateMessage_State_MANUAL ? "MANUAL" : "AUTOMATIC");
     }
     else
@@ -42,9 +43,9 @@ void send_state_message(StateMessage_State state)
 void send_waypoints_message()
 {
     WaypointsMessage msg = WaypointsMessage_init_zero;
-    static Waypoint waypoints[3] = {{.lat = 38.690777, .lng = -9.298534},
-                                    {.lat = 38.690491, .lng = -9.299178},
-                                    {.lat = 38.689983, .lng = -9.300013}};
+    static Waypoint waypoints[3] = {{.lat = 38.473601, .lng = -8.869591},
+                                    {.lat = 38.473388, .lng = -8.869464},
+                                    {.lat = 38.473511, .lng = -8.869186}};
     msg.waypoints.arg = waypoints;
     msg.waypoints.funcs.encode = waypoints_encode_callback;
 
@@ -53,14 +54,57 @@ void send_waypoints_message()
     if (pb_encode(&stream, WaypointsMessage_fields, &msg))
     {
         lora.sendPacket(buffer, stream.bytes_written);
-        display.printf("Sent 3 waypoints", 1);
-        display.printf("WP1: %.6f,%.6f", 2, waypoints[0].lat, waypoints[0].lng);
-        display.printf("WP2: %.6f,%.6f", 3, waypoints[1].lat, waypoints[1].lng);
-        display.printf("WP3: %.6f,%.6f", 4, waypoints[2].lat, waypoints[2].lng);
+        display.printf("Sent 3 waypoints", 2);
+        display.printf("WP1: %.6f,%.6f", 3, waypoints[0].lat, waypoints[0].lng);
+        display.printf("WP2: %.6f,%.6f", 4, waypoints[1].lat, waypoints[1].lng);
+        display.printf("WP3: %.6f,%.6f", 5, waypoints[2].lat, waypoints[2].lng);
     }
     else
     {
-        display.printf("WP encode fail", 1);
+        display.printf("WP encode fail", 2);
+    }
+}
+
+void send_manual_command(char cmd)
+{
+    StateMessage msg = StateMessage_init_zero;
+    msg.state = StateMessage_State_MANUAL;
+    msg.has_manual = true;
+
+    switch (cmd)
+    {
+        case 'f':
+            msg.manual.state = StateMessage_Manual_State_FORWARD;
+            display.printf("Manual: FRONT", 2);
+            break;
+        case 'b':
+            msg.manual.state = StateMessage_Manual_State_BACKWARD;
+            display.printf("Manual: BACK", 2);
+            break;
+        case 'l':
+            msg.manual.state = StateMessage_Manual_State_LEFT;
+            display.printf("Manual: LEFT", 2);
+            break;
+        case 'r':
+            msg.manual.state = StateMessage_Manual_State_RIGHT;
+            display.printf("Manual: RIGHT", 2);
+            break;
+        case 's':
+        default:
+            msg.manual.state = StateMessage_Manual_State_STOP;
+            display.printf("Manual: STOP", 2);
+            break;
+    }
+
+    uint8_t buffer[32];
+    pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+    if (pb_encode(&stream, StateMessage_fields, &msg))
+    {
+        lora.sendPacket(buffer, stream.bytes_written);
+    }
+    else
+    {
+        display.printf("Manual encode fail", 3);
     }
 }
 
@@ -69,7 +113,9 @@ void setup()
     display.setup();
     lora.setup();
     Serial.begin(115200);  // Start serial input
-    display.printf("Type 'manual', 'automatic', or 'waypoints'", 0);
+    display.printf("Type 'manual', 'automatic'", 0);
+    display.printf(", 'waypoints', or f/b/l/r/s", 1);
+
     delay(100);
 }
 
@@ -80,7 +126,7 @@ void loop()
     while (Serial.available())
     {
         char c = Serial.read();
-        if (c == '\n' || c == '\r')  // user pressed Enter
+        if (c == '\n' || c == '\r')
         {
             input.trim();
             if (input.equalsIgnoreCase("manual"))
@@ -95,21 +141,26 @@ void loop()
             {
                 send_waypoints_message();
             }
+            else if (input.length() == 1)
+            {
+                send_manual_command(input.charAt(0));
+            }
             else if (input.length() > 0)
             {
-                display.printf("Unknown: %s", 1, input.c_str());
+                display.printf("Unknown: %s", 2, input.c_str());
             }
 
             delay(1000);
 
-            input = "";  // reset buffer
+            input = "";
             display.clear();
-            display.printf("Type 'manual', 'automatic', or 'waypoints'", 0);
+            display.printf("Type 'manual', 'automatic'", 0);
+            display.printf(", 'waypoints', or f/b/l/r/s", 1);
         }
         else
         {
-            input += c;  // accumulate characters
-            display.printf("Typing: %s", 1, input.c_str());
+            input += c;
+            display.printf("Typing: %s", 2, input.c_str());
         }
     }
 }
