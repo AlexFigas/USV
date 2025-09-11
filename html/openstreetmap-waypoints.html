@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waypoints — OpenStreetMap Visualizer</title>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root{
+      --bg:#0f1724;
+      --panel:#0b1220;
+      --accent:#38bdf8;
+      --muted:#94a3b8;
+      --card:#071028;
+    }
+    html,body,#map{height:100%;}
+    body{
+      margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#071023 0%, #071327 60%);
+      color:#e6eef8; -webkit-font-smoothing:antialiased;
+    }
+    .app{
+      display:grid;grid-template-columns:380px 1fr;gap:20px;height:100vh;padding:20px;box-sizing:border-box;
+    }
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);backdrop-filter: blur(6px);border-radius:12px;padding:16px;box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+    }
+    h1{margin:0;font-size:18px;display:flex;align-items:center;gap:10px}
+    p.lead{color:var(--muted);margin:6px 0 12px;font-size:13px}
+    textarea{width:100%;height:220px;background:transparent;border:1px dashed rgba(255,255,255,0.06);color:inherit;padding:10px;border-radius:8px;resize:vertical}
+    .controls{display:flex;gap:8px;margin-top:10px}
+    button{background:linear-gradient(90deg,var(--accent),#60a5fa);border:none;padding:10px 12px;border-radius:10px;color:#04293a;font-weight:600;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600}
+    .small{font-size:13px;padding:8px 10px}
+    #map{border-radius:12px;overflow:hidden;box-shadow: 0 8px 40px rgba(2,6,23,0.6);}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+    .stats{color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:8px}
+    .footer{margin-top:12px;color:var(--muted);font-size:12px}
+    .example{font-family:monospace;background:rgba(255,255,255,0.02);padding:8px;border-radius:6px;font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="panel">
+      <h1>Waypoints Visualizer</h1>
+      <p class="lead">Paste a C-style static Waypoint array (or CSV / lat,lng pairs). Markers are numbered and connected by a neat polyline.</p>
+
+      <label for="input">Waypoint input</label>
+      <textarea id="input">static Waypoint waypoints[3] = {{.lat = 38.473601, .lng = -8.869591},
+{.lat = 38.473388, .lng = -8.869464},
+{.lat = 38.473511, .lng = -8.869186}};</textarea>
+
+      <div class="controls">
+        <button id="render">Render</button>
+        <button id="clear" class="ghost small">Clear</button>
+        <button id="fit" class="ghost small">Fit to bounds</button>
+      </div>
+
+      <div class="meta">
+        <div class="stats">Points: <span id="count">0</span> · Length: <span id="length">0</span> m</div>
+        <div class="actions">
+          <button id="exportGeo" class="small ghost">Export GeoJSON</button>
+          <button id="exportGpx" class="small ghost">Export GPX</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="width:10px;height:10px;border-radius:3px;background:var(--accent)"></div>
+          <div style="color:var(--muted);font-size:13px">Polyline color / width</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+          <input id="strokeWidth" type="range" min="1" max="8" value="4" />
+          <input id="strokeOpacity" type="range" min="0.1" max="1" step="0.1" value="0.9" />
+        </div>
+      </div>
+
+      <div class="footer">Hints: double-click markers to remove them. You can paste CSV like <span class="example">38.47,-8.86</span> or a C array. Click <strong>Fit to bounds</strong> after rendering to zoom.</div>
+    </div>
+
+    <div id="map" class="panel"></div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map', {zoomControl:true}).setView([38.4735, -8.8695], 16);
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles © Esri',
+        maxZoom: 19
+      }).addTo(map);
+
+    let markers = [];
+    let polyline = null;
+
+    const input = document.getElementById('input');
+    const renderBtn = document.getElementById('render');
+    const clearBtn = document.getElementById('clear');
+    const fitBtn = document.getElementById('fit');
+    const countEl = document.getElementById('count');
+    const lengthEl = document.getElementById('length');
+    const exportGeo = document.getElementById('exportGeo');
+    const exportGpx = document.getElementById('exportGpx');
+    const strokeWidth = document.getElementById('strokeWidth');
+    const strokeOpacity = document.getElementById('strokeOpacity');
+
+    function parseWaypoints(text){
+      const reObj = /\{([^}]+)\}/g;
+      const latRe = /(?:\.lat|lat)\s*=\s*([-+]?\d*\.?\d+)/i;
+      const lngRe = /(?:\.lng|lng)\s*=\s*([-+]?\d*\.?\d+)/i;
+      let match; let points = [];
+      while((match = reObj.exec(text)) !== null){
+        const inside = match[1];
+        const mLat = inside.match(latRe);
+        const mLng = inside.match(lngRe);
+        if(mLat && mLng){
+          const lat = parseFloat(mLat[1]);
+          const lng = parseFloat(mLng[1]);
+          if(!isNaN(lat) && !isNaN(lng)) points.push([lat,lng]);
+        }
+      }
+      if(points.length === 0){
+        const lines = text.split(/\n|;|,/).map(s=>s.trim()).filter(Boolean);
+        for(let i=0;i<lines.length-1;i+=2){
+          const a = parseFloat(lines[i]);
+          const b = parseFloat(lines[i+1]);
+          if(!isNaN(a) && !isNaN(b)) points.push([a,b]);
+        }
+        if(points.length===0){
+          const ln = text.split(/\n/);
+          for(const l of ln){
+            const m = l.match(/([-+]?\d*\.?\d+)\s*,\s*([-+]?\d*\.?\d+)/);
+            if(m) points.push([parseFloat(m[1]), parseFloat(m[2])]);
+          }
+        }
+      }
+      return points;
+    }
+
+    function makeIcon(i){
+      return L.divIcon({
+        className: 'number-icon',
+        html: `<div style="background:rgba(255,255,255,0.95);color:#032e3a;padding:6px 8px;border-radius:10px;font-weight:700;border:2px solid rgba(2,6,23,0.08);">${i}</div>`,
+        iconSize: [28,28],
+        iconAnchor: [14,28]
+      });
+    }
+
+    function clearMap(){
+      markers.forEach(m=>map.removeLayer(m)); markers = [];
+      if(polyline) { map.removeLayer(polyline); polyline = null; }
+      updateStats();
+    }
+
+    function updateStats(){
+      countEl.textContent = markers.length;
+      if(markers.length<2){ lengthEl.textContent = '0'; return; }
+      const coords = markers.map(m=>m.getLatLng());
+      let dist = 0;
+      for(let i=1;i<coords.length;i++) dist += coords[i-1].distanceTo(coords[i]);
+      lengthEl.textContent = Math.round(dist).toLocaleString();
+    }
+
+    function renderWaypoints(points){
+      clearMap();
+      const latlngs = points.map(p=>[p[0],p[1]]);
+      latlngs.forEach((ll,i)=>{
+        const m = L.marker(ll, {icon: makeIcon(i+1), draggable:false}).addTo(map);
+        m.on('dblclick', ()=>{
+          map.removeLayer(m);
+          markers = markers.filter(x=>x!==m);
+          rebuildAfterRemoval();
+        });
+        markers.push(m);
+      });
+      const width = parseInt(strokeWidth.value,10) || 4;
+      const opacity = parseFloat(strokeOpacity.value) || 0.9;
+      polyline = L.polyline(latlngs, {color:'#38bdf8',weight:width,opacity:opacity, lineJoin:'round'}).addTo(map);
+      fitToBounds();
+      updateStats();
+    }
+
+    function rebuildAfterRemoval(){
+      const pts = markers.map(m=>[m.getLatLng().lat,m.getLatLng().lng]);
+      markers.forEach((m,i)=>m.setIcon(makeIcon(i+1)));
+      if(polyline){ map.removeLayer(polyline); polyline = null; }
+      if(pts.length>0) polyline = L.polyline(pts, {color:'#38bdf8',weight:parseInt(strokeWidth.value,10),opacity:parseFloat(strokeOpacity.value)}).addTo(map);
+      updateStats();
+    }
+
+    function fitToBounds(){
+      const group = new L.featureGroup(markers);
+      if(markers.length===0) return;
+      map.fitBounds(group.getBounds().pad(0.15));
+    }
+
+    function exportGeoJSON(){
+      const feat = { type: 'FeatureCollection', features: [] };
+      const coords = markers.map(m=>[m.getLatLng().lng,m.getLatLng().lat]);
+      if(coords.length>0){
+        feat.features.push({type:'Feature',properties:{},geometry:{type:'LineString',coordinates:coords}});
+        coords.forEach((c,i)=>feat.features.push({type:'Feature',properties:{index:i+1},geometry:{type:'Point',coordinates:c}}));
+      }
+      const blob = new Blob([JSON.stringify(feat, null, 2)],{type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='waypoints.geojson'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    function exportGPX(){
+      const points = markers.map(m=>m.getLatLng());
+      let gpx = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n`;
+      gpx += `<gpx version="1.1" creator="Waypoints Visualizer" xmlns="http://www.topografix.com/GPX/1/1">\n`;
+      gpx += `<trk><name>Waypoints</name><trkseg>\n`;
+      points.forEach(p=>{ gpx += `<trkpt lat="${p.lat}" lon="${p.lng}"></trkpt>\n`; });
+      gpx += `</trkseg></trk>\n</gpx>`;
+      const blob = new Blob([gpx],{type:'application/gpx+xml'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='waypoints.gpx'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    renderBtn.addEventListener('click', ()=>{
+      const pts = parseWaypoints(input.value);
+      if(pts.length===0){ alert('No points found. Paste the C-style array or lat,lng pairs.'); return; }
+      renderWaypoints(pts);
+    });
+
+    clearBtn.addEventListener('click', ()=>{ input.value=''; clearMap(); });
+    fitBtn.addEventListener('click', ()=>fitToBounds());
+    exportGeo.addEventListener('click', ()=>exportGeoJSON());
+    exportGpx.addEventListener('click', ()=>exportGPX());
+
+    strokeWidth.addEventListener('input', ()=>{ if(polyline) polyline.setStyle({weight:parseInt(strokeWidth.value,10)}); });
+    strokeOpacity.addEventListener('input', ()=>{ if(polyline) polyline.setStyle({opacity:parseFloat(strokeOpacity.value)}); });
+
+    window.addEventListener('load', ()=>{ renderBtn.click(); });
+  </script>
+</body>
+</html>

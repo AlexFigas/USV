@@ -9,28 +9,27 @@ MovementTwoThrusters::MovementTwoThrusters(Thruster* left, Thruster* right, floa
 
 void MovementTwoThrusters::curve(float speed, float radius, float angle, bool isLeft)
 {
-    // Stub implementation
+    /// @note Not needed. Won't be implemented.
 }
 
 void MovementTwoThrusters::left(float speed, float radius, float angle)
 {
-    motors[MOTOR_RIGHT]->front(speed, 0);
-    motors[MOTOR_LEFT]->back(speed, 0);
+    thrusters[MOTOR_RIGHT]->front(speed, 0);
+    thrusters[MOTOR_LEFT]->back(speed / 3, 0);
 }
 
 void MovementTwoThrusters::right(float speed, float radius, float angle)
 {
-    // Stub implementation
-    motors[MOTOR_LEFT]->front(speed, 0);
-    motors[MOTOR_RIGHT]->back(speed, 0);
+    thrusters[MOTOR_LEFT]->front(speed, 0);
+    thrusters[MOTOR_RIGHT]->back(speed / 3, 0);
 }
 
 void MovementTwoThrusters::directionCurveCalibration()
 {
-    // Stub implementation
+    /// @note Not needed. Won't be implemented.
 }
 
 void MovementTwoThrusters::directionLineCalibration()
 {
-    // Stub implementation
+    /// @note Not needed. Won't be implemented.
 }

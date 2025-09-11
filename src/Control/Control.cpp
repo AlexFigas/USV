@@ -137,12 +137,10 @@ void Control::setCourse(int bearingError)
     if (bearingError > 0)
     {
         movement.right(100, 0, bearingError);
-        movement.left(50, 0, bearingError);
     }
     else if (bearingError < 0)
     {
         movement.left(100, 0, -bearingError);
-        movement.right(50, 0, -bearingError);
     }
     else
     {
@@ -167,9 +165,10 @@ void Control::manualControl(StateMessage_Manual_State manualState)
             movement.right(100, 0, 0);
             break;
         case StateMessage_Manual_State_STOP:
+            movement.stop();
+            break;
         case StateMessage_Manual_State_NONE:
         default:
-            movement.stop();
             break;
     }
 }
