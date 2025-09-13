@@ -15,13 +15,13 @@ void MovementTwoThrusters::curve(float speed, float radius, float angle, bool is
 void MovementTwoThrusters::left(float speed, float radius, float angle)
 {
     thrusters[MOTOR_RIGHT]->front(speed, 0);
-    thrusters[MOTOR_LEFT]->back(speed / 3, 0);
+    thrusters[MOTOR_LEFT]->front(speed / 3, 0);
 }
 
 void MovementTwoThrusters::right(float speed, float radius, float angle)
 {
     thrusters[MOTOR_LEFT]->front(speed, 0);
-    thrusters[MOTOR_RIGHT]->back(speed / 3, 0);
+    thrusters[MOTOR_RIGHT]->front(speed / 3, 0);
 }
 
 void MovementTwoThrusters::directionCurveCalibration()
