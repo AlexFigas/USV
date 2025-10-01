@@ -11,7 +11,6 @@ Thruster::Thruster(Expander& expander, const ThrusterController& controller)
 void Thruster::begin()
 {
     Serial.println("Initializing Thruster...");
-    Serial.printf("Thruster Name: %s\n", controller.NAME.c_str());
 
     _expander.begin();
     _expander.setDutyCycle(controller.PIN_EN, 0);

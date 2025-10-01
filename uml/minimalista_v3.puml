@@ -1,0 +1,60 @@
+@startuml Simplified_USV
+!theme mono
+skinparam linetype ortho
+left to right direction
+
+package "Robot Didático" as RobotDidatico {
+    class Robot
+    class Movement
+    class Motor
+    class MotorController
+}
+
+package USV #EEEEEE {
+    class USV
+    class MovementTwoThrusters
+    class Thruster
+    class ThrusterController
+}
+
+package "Control" #DDDDDD {
+    class Control
+}
+
+package "Sensors" #CCCCCC {
+    class GPSData
+    class IMUData
+}
+
+package "Communication" #BBBBBB {
+    class Led
+    class LoRa
+}
+
+' package "Protobuf" as USVProto #AAAAAA {
+' }
+
+' Key relations
+
+USV.USV --|> RobotDidatico.Robot
+USV.MovementTwoThrusters --|> RobotDidatico.Movement
+USV.Thruster --|> RobotDidatico.Motor
+USV.ThrusterController --|> RobotDidatico.MotorController
+
+USV.USV o-- MovementTwoThrusters
+USV.USV *-- Control
+USV.USV *-- LoRa
+USV.USV o-- Led
+USV.USV --> GPSData
+USV.USV --> IMUData
+
+"Control" --> GPSData
+"Control" --> IMUData
+
+LoRa o-- Control
+' LoRa --> USVProto
+
+USV.Thruster *-- ThrusterController
+MovementTwoThrusters *-- Thruster
+
+@enduml

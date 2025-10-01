@@ -35,6 +35,7 @@ void USV::begin()
     Wire.begin(SDA_PIN, SCL_PIN);
     Robot::begin();
     Serial.println("USV initialized");
+    lora.setup();
 }
 
 void USV::stop()

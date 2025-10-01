@@ -1,0 +1,62 @@
+@startuml Diagrama_de_classes
+!theme mono
+skinparam linetype ortho
+left to right direction
+
+package USV #EEEEEE {
+}
+
+package "Protobuf:USV" as USVProto #DDDDDD{
+}
+
+/' Relações '/
+USV.Control.Control o-- USV.Communication.Led
+USV.Control.Control *-- USVProto.Waypoint
+
+' USV.Display o-- Adafruit_SSD1306
+
+USV.GPS.GPS_BN880 *-- USV.GPS.GPSData
+' USV.GPS_BN880 o-- USV.TinyGPSPlus
+' USV.GPS_BN880 o-- SC16IS7X0
+
+' GPSData o-- TinyGPSPlus
+
+USV.IMU.IMU_ICM_20948 *-- USV.IMU.IMUData
+' USV.IMU_ICM_20948 o-- ICM_20948_I2C
+
+USV.IMU.IMUData *-- USV.IMU.Acceleration
+USV.IMU.IMUData *-- USV.IMU.Gyroscope
+USV.IMU.IMUData *-- USV.IMU.Magnetometer
+USV.IMU.IMUData *-- USV.IMU.Orientation
+
+' IMUData o-- ICM_20948_I2C
+' IMUData o-- Madgwick
+
+USV.USV.MovementTwoThrusters *-- USV.USV.Thruster
+
+USV.USV.Thruster *-- USV.USV.ThrusterController
+
+USV.USV.USV o-- USV.USV.MovementTwoThrusters
+USV.USV.USV *-- USV.Control.Control
+USV.USV.USV *-- USV.Communication.LoRaDuplex
+USV.USV.USV *-- USV.Communication.LoRaProto
+USV.USV.USV o-- USV.Communication.Led
+USV.USV.USV --> USV.GPS.GPSData
+USV.USV.USV --> USV.IMU.IMUData
+
+USV.Communication.Led *-- USV.Communication.LedState
+
+' LoRaDuplex o-- LoRa
+' LoRaDuplex o-- SPI
+
+USV.Communication.LoRaProto o-- USV.Control.Control
+USV.Communication.LoRaProto o-- USV.Communication.LoRaDuplex
+USV.Communication.LoRaProto *-- USVProto.Waypoint
+USV.Communication.LoRaProto --> USVProto
+
+USVProto.StateMessage *-- USVProto.StateMessage_Manual
+USVProto.StateMessage *-- USVProto.StateMessage_State
+USVProto.StateMessage_Manual *-- USVProto.StateMessage_Manual_State
+USVProto.WaypointsMessage *-- USVProto.Waypoint
+
+@enduml

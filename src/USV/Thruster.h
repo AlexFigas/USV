@@ -9,14 +9,12 @@ struct ThrusterController : public MotorController
     uint16_t PWM_MAX_PULSE;
     uint16_t PWM_STOP_PULSE;
     uint8_t PWM_FREQ;
-    String NAME;
 
     ThrusterController(byte pin_en,
                        uint16_t min_pulse = 1000,
                        uint16_t max_pulse = 2000,
                        uint16_t stop_pulse = 1500,
-                       uint8_t freq = 50,
-                       String name = "Thruster")
+                       uint8_t freq = 50)
         : MotorController{
               .PIN_EN = pin_en,
               .PIN_IN1 = 0,                  // Not used in Thruster
@@ -30,7 +28,6 @@ struct ThrusterController : public MotorController
         PWM_MAX_PULSE = max_pulse;
         PWM_STOP_PULSE = stop_pulse;
         PWM_FREQ = freq;
-        NAME = name;
     }
 };
 

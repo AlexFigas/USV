@@ -1,4 +1,6 @@
-#pragma once
+#ifndef LED_H
+#define LED_H
+
 #include "Expander.h"
 #include <chrono>
 
@@ -35,3 +37,5 @@ class Led
     unsigned long blinkStart;
     unsigned long lastToggle;
 };
+
+#endif

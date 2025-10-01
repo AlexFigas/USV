@@ -1,0 +1,23 @@
+@startuml
+skinparam rectangle {
+  BackgroundColor<<sensor>> LightBlue
+  BackgroundColor<<actuator>> LightGreen
+  BackgroundColor<<comm>> LightYellow
+}
+skinparam Linetype ortho
+
+rectangle "MC" as mc
+rectangle "LoRa" as lora <<comm>>
+rectangle "GPS" as gps <<sensor>>
+rectangle "IMU" as imu <<sensor>>
+rectangle "PWM" as pwm
+
+mc - gps
+mc - imu
+mc - pwm
+mc -down- lora
+
+actor usr as "User"
+lora -[dashed]-> usr : LoRa
+
+@enduml

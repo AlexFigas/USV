@@ -1,0 +1,190 @@
+@startuml Diagrama_de_classes
+!theme mono
+skinparam linetype ortho
+left to right direction
+
+package "Robot Didático" as RobotDidatico #EEEEEE {
+    class Expander {
+    }
+
+    struct Data {
+    }
+
+    class Motor {
+    }
+
+    abstract class Movement {
+    }
+
+    class Robot {
+    }
+
+    class MovementTwoMotors extends Movement {
+    }
+
+    struct Interrupt {
+    }
+
+    struct MotorController {
+    }
+}
+
+package USV #DDDDDD {
+    package Control {
+        class Control {
+        }
+    }
+
+    package Display {
+        class Display {
+        }
+    }
+
+    package GPS {
+        class GPS_BN880 {
+        }
+
+        class GPSData {
+        }
+    }
+
+    package IMU {
+        class IMU_ICM_20948 {
+        }
+
+        class IMUData {
+        }
+
+        struct Acceleration {
+        }
+
+        struct Gyroscope {
+        }
+
+        struct Magnetometer {
+        }
+
+        struct Orientation {
+        }
+    }
+
+    package USV {
+        class MovementTwoThrusters {
+        }
+
+        struct ThrusterController {
+        }
+
+        class Thruster {
+        }
+
+        class USV {
+        }
+    }
+
+    package "Communication" {
+        class Led {
+        }
+
+        enum LedState {
+        }
+
+        class LoRaDuplex {
+        }
+
+        class LoRaProto {
+        }
+
+        struct WaypointDecodeContext {
+        }
+    }
+}
+
+package "Protobuf:USV" as USVProto #CCCCCC{
+    class StateMessage {
+    }
+
+    enum StateMessage_State {
+    }
+
+    class StateMessage_Manual {
+    }
+
+    enum StateMessage_Manual_State {
+    }
+
+    class Waypoint {
+    }
+
+    class WaypointsMessage {
+    }
+}
+
+
+/' Relações '/
+RobotDidatico.Motor *-- RobotDidatico.Expander
+RobotDidatico.Motor *-- RobotDidatico.Interrupt
+RobotDidatico.Motor *-- RobotDidatico.MotorController
+RobotDidatico.MotorController *-- RobotDidatico.Interrupt
+RobotDidatico.Movement o-- RobotDidatico.Motor
+RobotDidatico.Robot o-- RobotDidatico.Movement
+RobotDidatico.Movement *-- RobotDidatico.Data
+
+USV.Control.Control o-- RobotDidatico.Movement
+USV.Control.Control o-- USV.Communication.Led
+USV.Control.Control *-- USVProto.Waypoint
+
+' USV.Display o-- Adafruit_SSD1306
+
+USV.GPS.GPS_BN880 *-- USV.GPS.GPSData
+' USV.GPS_BN880 o-- USV.TinyGPSPlus
+' USV.GPS_BN880 o-- SC16IS7X0
+
+' GPSData o-- TinyGPSPlus
+
+USV.IMU.IMU_ICM_20948 *-- USV.IMU.IMUData
+' USV.IMU_ICM_20948 o-- ICM_20948_I2C
+
+USV.IMU.IMUData *-- USV.IMU.Acceleration
+USV.IMU.IMUData *-- USV.IMU.Gyroscope
+USV.IMU.IMUData *-- USV.IMU.Magnetometer
+USV.IMU.IMUData *-- USV.IMU.Orientation
+
+' IMUData o-- ICM_20948_I2C
+' IMUData o-- Madgwick
+
+USV.USV.MovementTwoThrusters <|-- RobotDidatico.Movement
+USV.USV.MovementTwoThrusters *-- USV.USV.Thruster
+
+USV.USV.ThrusterController <|-- RobotDidatico.MotorController
+USV.USV.Thruster <|-- RobotDidatico.Motor
+USV.USV.Thruster *-- USV.USV.ThrusterController
+USV.USV.Thruster o-- RobotDidatico.Expander
+
+USV.USV.USV <|-- RobotDidatico.Robot
+USV.USV.USV o-- RobotDidatico.Expander
+USV.USV.USV o-- USV.USV.MovementTwoThrusters
+USV.USV.USV *-- USV.Control.Control
+USV.USV.USV *-- USV.Communication.LoRaDuplex
+USV.USV.USV *-- USV.Communication.LoRaProto
+USV.USV.USV o-- USV.Communication.Led
+' USV.USV --> USV.GPS.GPSData
+' USV.USV --> USV.IMU.IMUData
+
+USV.Communication.Led o-- RobotDidatico.Expander
+USV.Communication.Led *-- USV.Communication.LedState
+
+' LoRaDuplex o-- LoRa
+' LoRaDuplex o-- SPI
+
+USV.Communication.LoRaProto o-- USV.Control.Control
+USV.Communication.LoRaProto o-- USV.Communication.LoRaDuplex
+USV.Communication.LoRaProto *-- USVProto.Waypoint
+USV.Communication.LoRaProto --> USVProto
+
+USVProto.StateMessage *-- USVProto.StateMessage_Manual
+USVProto.StateMessage *-- USVProto.StateMessage_State
+USVProto.StateMessage_Manual *-- USVProto.StateMessage_Manual_State
+USVProto.WaypointsMessage *-- USVProto.Waypoint
+
+@enduml

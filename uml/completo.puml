@@ -1,0 +1,559 @@
+@startuml Diagrama_de_classes
+!theme mono
+skinparam linetype ortho
+left to right direction
+
+package "Robot Didático" as RobotDidatico #EEEEEE {
+    class Expander {
+        +Expander(byte address)
+        -_board : Adafruit_PWMServoDriver
+        -_initialized : bool
+        -_address : byte
+        -{static} _MAX_DUTY_CYCLE : const static byte
+        -{static} _MIN_DUTY_CYCLE : const static byte
+        -{static} _MAX_PWM_ON : const static int
+        -{static} _MIN_PWM_ON : const static int
+        -{static} _PWM_OFF_POINT : const static int
+        +setDutyCycle(byte channel, float duty_cycle) : int
+        +begin() : void
+        +setPWM(byte channel, int pwm) : void
+    }
+
+    struct Data {
+        +ratio : float
+        +pwmLeft : int
+        +pwmRight : int
+        +ticksLeft : int
+        +ticksRight : int
+    }
+
+    class Motor {
+        +Motor(Expander expander, MotorController controller)
+        -_expander : Expander
+        -_incrementCounter() : IRAM_ATTR void
+        -_interrupt : Interrupt
+        -_controller : MotorController
+        +hasInterrupt() : bool
+        -_perimeter : float
+        -_radius : float
+        -_speed : float
+        +getPerimeter() : float
+        +getRadius() : float
+        +getSpeed() : float
+        -_hasInterrupt : int
+        -_interruptTarget : int
+        -_pwm : int
+        -_turnInterruptCount : int
+        +getCounter() : int
+        +getPWM() : int
+        +getTargetInterrupt() : int
+        -{static} _INTERRUPT_FIX : static const int
+        -{static} _FULL_SPEED : static constexpr const float
+        -{static} _STOP_SPEED : static constexpr const float
+        -_updateInterruptTarget(float length) : void
+        +back(float speed, float cm) : void
+        +begin() : void
+        +block() : void
+        +front(float speed, float length) : void
+        +resetCounter() : void
+        +setDirection(bool clockwise) : void
+        +setPWM(int pwm) : void
+        +setSpeed(float speed) : void
+        +slow() : void
+        +stop() : void
+        -_counter : volatile int
+    }
+
+    abstract class Movement {
+        +Movement(Motor* motors, float track)
+        #_motors : Motor*
+        +getMotors() : Motor*
+        #_MAX_SPEED : float
+        #_MIN_SPEED : float
+        -_track : float
+        +getTrack() : float
+        #_MAX_PWM : int
+        #_MIN_PWM : int
+        #_numMotors : int
+        +back(float speed, float length) : void
+        +begin() : void
+        +block() : void
+        +{abstract} curve(float speed, float radius, float angle, bool isLeft) : void
+        +{abstract} directionCurveCalibration() : void
+        +{abstract} directionLineCalibration() : void
+        +front(float speed, float length) : void
+        +{abstract} left(float speed, float radius, float angle) : void
+        +line(float speed, float length, bool isFront) : void
+        +reset() : void
+        +{abstract} right(float speed, float radius, float angle) : void
+        +slow() : void
+        +stop() : void
+    }
+
+    class Robot {
+        +Robot(String name, Movement* movement)
+        -_movement : Movement
+        -_name : String
+        -_command : String
+        +begin() : void
+        +loop() : void
+        -_processCommand(String command) : void
+    }
+
+    class MovementTwoMotors extends Movement {
+        +MovementTwoMotors(Motor* motors, float track)
+        +curve(float speed, float radius, float angle, bool isLeft) : void
+        +left(float speed, float radius, float angle) : void
+        +right(float speed, float radius, float angle) : void
+        +directionCurveCalibration() : void
+        +directionLineCalibration() : void
+    }
+
+    struct Interrupt {
+        +INT_COUNT : byte
+        +PIN_DO : byte
+    }
+
+    struct MotorController {
+        +interrupt : Interrupt
+        +PIN_EN : byte
+        +PIN_IN1 : byte
+        +PIN_IN2 : byte
+        +wheelRadius : float
+    }
+}
+
+package USV #DDDDDD {
+    package Control {
+        class Control {
+            +Control(Movement& movement, Led& automaticLed, Led& manualLed)
+            +setWaypoints(const Waypoint waypoints[], size_t size) : void
+            +setState(StateMessage_State state, StateMessage_Manual_State manualState) : void
+            +getState() const : StateMessage_State
+            +update(GPSData& gps, const IMUData& imu) : void
+            +control() : void
+
+            -automaticControl() : void
+            -manualControl(StateMessage_Manual_State manualState) : void
+            -computeDistance(GPSData& gps, const Waypoint& wp) : double
+            -computeBearing(GPSData& gps, const Waypoint& wp) : double
+            -setCourse(int bearingError) : void
+
+            -movement : Movement&
+            -waypoints : std::vector<Waypoint>
+            -waypointThreshold : double = 3.0
+            -currentWaypoint : size_t
+            -lastBearingError : double
+            -distanceToWaypoint : double
+            -bearingToWaypoint : double
+            -heading : double
+            -automaticLed : Led&
+            -manualLed : Led&
+            -state : StateMessage_State
+            -manualState : StateMessage_Manual_State
+            -lastState : StateMessage_State
+            -manualCommand : StateMessage_Manual_State
+        }
+    }
+
+    package Display {
+        class Display {
+            +Display(int width, int height, int rstPin, int sdaPin=4, int sclPin=15, uint8_t addr=0x3C)
+            +Display()
+            +setup() : void
+            +printf(const char* format, int line, ...) : void
+            +clear() : void
+
+            -width : int
+            -height : int
+            -rstPin : int
+            -sdaPin : int
+            -sclPin : int
+            -addr : uint8_t
+            -display : Adafruit_SSD1306*
+            -textSize : uint8_t
+            -textColor : uint16_t
+            -cursorX : int
+            -cursorY : int
+            -buffer : String
+            -maxCharsPerLine : int
+
+            -applySettings() : void
+            -printLine(String& str, int line) : void
+        }
+    }
+
+    package GPS {
+        class GPS_BN880 {
+            +GPS_BN880()
+            +GPS_BN880(int8_t sdaPin, int8_t sclPin)
+            +GPS_BN880(int8_t sdaPin, int8_t sclPin, uint8_t i2cAddress)
+            +GPS_BN880(int8_t sdaPin, int8_t sclPin, uint8_t i2cAddress, uint32_t crystalFreq)
+            +GPS_BN880(int8_t sdaPin, int8_t sclPin, uint8_t i2cAddress, uint32_t crystalFreq, uint32_t gpsBaud)
+
+            +setup() : void
+            +loop() : void
+            +enableDebug() : void
+            +enableInfo() : void
+            +getGPSData() : GPSData
+
+            -GPS_BAUD : uint32_t
+            -gps : TinyGPSPlus
+            -currentGPSData : GPSData
+            -CRYSTAL_FREQ : uint32_t
+            -I2C_ADD : uint8_t
+            -SDA_PIN : int8_t
+            -SCL_PIN : int8_t
+            -sc16is750 : SC16IS7X0
+            -debug : bool
+            -info : bool
+            -GPS_TIMEOUT_TIME_THRESHOLD : uint16_t = 5000
+            -GPS_TIMEOUT_CHAR_COUNT : uint8_t = 10
+
+            -read() : void
+            -printDebug() : void
+        }
+
+        class GPSData {
+            +GPSData()
+
+            +location : TinyGPSLocation
+            +date : TinyGPSDate
+            +time : TinyGPSTime
+            +speed : TinyGPSSpeed
+            +course : TinyGPSCourse
+            +altitude : TinyGPSAltitude
+            +satellites : TinyGPSInteger
+            +hdop : TinyGPSHDOP
+            +charsProcessed : uint32_t
+            +sentencesWithFix : uint32_t
+            +failedChecksum : uint32_t
+            +isUpdated : bool
+
+            +update(TinyGPSPlus& gps) : void
+            +print() : void
+
+            -printFloat(float value, bool isValid, int totalWidth, int decimalPlaces) : void
+            -printInt(unsigned long value, bool isValid, int totalWidth) : void
+            -printDateTime(TinyGPSDate& date, TinyGPSTime& time) : void
+        }
+    }
+
+    package IMU {
+        class IMU_ICM_20948 {
+            +IMU_ICM_20948()
+            +IMU_ICM_20948(int8_t sdaPin, int8_t sclPin)
+
+            +setup() : void
+            +loop() : void
+            +enableDebug() : void
+            +enableInfo() : void
+            +getIMUData() : IMUData
+
+            -imu : ICM_20948_I2C
+            -currentIMUData : IMUData
+            -SDA_PIN : int8_t
+            -SCL_PIN : int8_t
+            -debug : bool
+            -info : bool
+
+            -printDebug() : void
+        }
+
+        class IMUData {
+            +IMUData()
+
+            +acc : Acceleration
+            +gyr : Gyroscope
+            +mag : Magnetometer
+            +temp : float
+            +ypr : Orientation
+
+            +begin(float sampleFreq) : void
+            +update(ICM_20948_I2C* sensor) : void
+            +print() : void
+
+            -filter : Madgwick
+            -lastUpdate : unsigned long
+
+            -printFloat(float value, uint8_t leading, uint8_t decimals) : void
+        }
+
+        struct Acceleration {
+            +x : float
+            +y : float
+            +z : float
+        }
+
+        struct Gyroscope {
+            +x : float
+            +y : float
+            +z : float
+        }
+
+        struct Magnetometer {
+            +x : float
+            +y : float
+            +z : float
+        }
+
+        struct Orientation {
+            +yaw : float
+            +pitch : float
+            +roll : float
+        }
+    }
+
+    package USV {
+        class MovementTwoThrusters {
+            +MovementTwoThrusters(Thruster* left, Thruster* right, float track=0.0f)
+
+            +curve(float speed, float radius, float angle, bool isLeft=true) : void
+            +left(float speed, float radius, float angle) : void
+            +right(float speed, float radius, float angle) : void
+            +directionCurveCalibration() : void
+            +directionLineCalibration() : void
+
+            -thrusters[2] : Thruster*
+        }
+
+        struct ThrusterController {
+            +PWM_MIN_PULSE : uint16_t
+            +PWM_MAX_PULSE : uint16_t
+            +PWM_STOP_PULSE : uint16_t
+            +PWM_FREQ : uint8_t
+            +NAME : String
+        }
+
+        class Thruster {
+            +Thruster(Expander& expander, const ThrusterController& controller)
+
+            +begin() : void
+            +setDirection(bool clockwise) : void
+            +front(float speed, float length=0) : void
+            +back(float speed, float length=0) : void
+            +stop() : void
+
+            -controller : ThrusterController
+            -pulseToTicks(int microseconds) : uint16_t
+        }
+
+        class USV {
+            +USV(Expander& expander,
+                ThrusterController& leftController,
+                ThrusterController& rightController,
+                Led& automaticLed,
+                Led& manualLed)
+
+            +loop(GPSData& gpsData, IMUData& imuData) : void
+            +begin() : void
+            +stop() : void
+            +setCourse(double bearingError) : void
+            +getLoRaProto() : LoRaProto&
+
+            -expander : Expander&
+            -leftController : ThrusterController&
+            -rightController : ThrusterController&
+            -automaticLed : Led&
+            -manualLed : Led&
+            -thrusters[2] : Thruster
+            -movement : MovementTwoThrusters
+            -control : Control
+            -loraDuplex : LoRaDuplex
+            -lora : LoRaProto
+            -SDA_PIN : const uint8_t
+            -SCL_PIN : const uint8_t
+        }
+    }
+
+    package "Communication" {
+        class Led {
+            +Led(Expander& expander, int pin)
+
+            +begin() : void
+            +on() : void
+            +off() : void
+            +blink(int duration, int interval) : void
+            +update() : void
+            +isOn() const : bool
+
+            -expander : Expander&
+            -pin : int
+            -state : State
+            -lastState : State = IDLE
+            -isBlinking : bool
+            -blinkDuration : unsigned long
+            -blinkInterval : unsigned long
+            -blinkStart : unsigned long
+            -lastToggle : unsigned long
+        }
+
+        enum LedState {
+            OFF
+            ON
+            BLINK_ON
+            BLINK_OFF
+            IDLE
+        }
+
+        class LoRaDuplex {
+            +LoRaDuplex()
+            +LoRaDuplex(int SCK, int MISO, int MOSI, int SS, int RST, int DIO0, long BAND)
+
+            +setup() : void
+            +enableDebug() : void
+            +printDebug() : void
+
+            +receivePacket() : void
+            +receivePacket(uint8_t* buffer, size_t maxLength) : size_t
+            +getLastReceivedMessage() : String
+            +getReceivedPacketCount() : int
+
+            +sendPacket(const String& message) : bool
+            +sendPacket(const uint8_t* data, size_t length) : bool
+            +getSentPacketCount() : int
+
+            -SCK : int
+            -MISO : int
+            -MOSI : int
+            -SS : int
+            -RST : int
+            -DIO0 : int
+            -BAND : long
+            -debug : bool
+            -lastReceivedMessage : String
+            -receivedCount : int
+            -sentCount : int
+        }
+
+        class LoRaProto {
+            +LoRaProto(Control& control, LoRaDuplex& lora)
+
+            +setup() : void
+            +enableDebug() : void
+            +sendStateMessage(StateMessage_State state, StateMessage_Manual_State manualState) : void
+            +sendWaypointsMessage(Waypoint* waypoints, size_t count) : void
+            +receive() : void
+            +getLoRaDuplex() : LoRaDuplex&
+            +getLastReceivedMessage() : const char*
+
+            -control : Control&
+            -lora : LoRaDuplex&
+            -waypoints[MAX_WAYPOINTS] : Waypoint
+            -lastReceivedMessage : String
+            -MAX_WAYPOINTS : static const size_t = 6
+            -BUFFER_SIZE : static const uint8_t = 128
+
+            -waypointsEncodeCallback(...) : static bool
+            -waypointsDecodeCallback(...) : static bool
+        }
+
+        struct WaypointDecodeContext {
+            self : LoRaProto*
+            idx : size_t
+        }
+    }
+}
+
+package "Protobuf:USV" as USVProto #CCCCCC{
+    class StateMessage {
+        +state : State
+        +manual : Manual
+    }
+
+    enum StateMessage_State {
+        NONE
+        MANUAL
+        AUTOMATIC
+    }
+
+    class StateMessage_Manual {
+        +state : State
+    }
+
+    enum StateMessage_Manual_State {
+        NONE
+        FORWARD
+        BACKWARD
+        LEFT
+        RIGHT
+        STOP
+    }
+
+    class Waypoint {
+        +lat : double
+        +lng : double
+    }
+
+    class WaypointsMessage {
+        +waypoints : List<Waypoint>
+    }
+}
+
+/' Relações '/
+RobotDidatico.Motor *-- RobotDidatico.Expander
+RobotDidatico.Motor *-- RobotDidatico.Interrupt
+RobotDidatico.Motor *-- RobotDidatico.MotorController
+RobotDidatico.MotorController *-- RobotDidatico.Interrupt
+RobotDidatico.Movement o-- RobotDidatico.Motor
+RobotDidatico.Robot o-- RobotDidatico.Movement
+RobotDidatico.Movement *-- RobotDidatico.Data
+
+USV.Control.Control o-- RobotDidatico.Movement
+USV.Control.Control o-- USV.Communication.Led
+USV.Control.Control *-- USVProto.Waypoint
+
+' USV.Display o-- Adafruit_SSD1306
+
+USV.GPS.GPS_BN880 *-- USV.GPS.GPSData
+' USV.GPS_BN880 o-- USV.TinyGPSPlus
+' USV.GPS_BN880 o-- SC16IS7X0
+
+' GPSData o-- TinyGPSPlus
+
+USV.IMU.IMU_ICM_20948 *-- USV.IMU.IMUData
+' USV.IMU_ICM_20948 o-- ICM_20948_I2C
+
+USV.IMU.IMUData *-- USV.IMU.Acceleration
+USV.IMU.IMUData *-- USV.IMU.Gyroscope
+USV.IMU.IMUData *-- USV.IMU.Magnetometer
+USV.IMU.IMUData *-- USV.IMU.Orientation
+
+' IMUData o-- ICM_20948_I2C
+' IMUData o-- Madgwick
+
+USV.USV.MovementTwoThrusters --|> RobotDidatico.Movement
+USV.USV.MovementTwoThrusters *-- USV.USV.Thruster
+
+USV.USV.ThrusterController --|> RobotDidatico.MotorController
+USV.USV.Thruster --|> RobotDidatico.Motor
+USV.USV.Thruster *-- USV.USV.ThrusterController
+USV.USV.Thruster o-- RobotDidatico.Expander
+
+USV.USV.USV --|> RobotDidatico.Robot
+USV.USV.USV o-- RobotDidatico.Expander
+USV.USV.USV o-- USV.USV.MovementTwoThrusters
+USV.USV.USV *-- USV.Control.Control
+USV.USV.USV *-- USV.Communication.LoRaDuplex
+USV.USV.USV *-- USV.Communication.LoRaProto
+USV.USV.USV o-- USV.Communication.Led
+' USV.USV --> USV.GPS.GPSData
+' USV.USV --> USV.IMU.IMUData
+
+USV.Communication.Led o-- RobotDidatico.Expander
+USV.Communication.Led *-- USV.Communication.LedState
+
+' LoRaDuplex o-- LoRa
+' LoRaDuplex o-- SPI
+
+USV.Communication.LoRaProto o-- USV.Control.Control
+USV.Communication.LoRaProto o-- USV.Communication.LoRaDuplex
+USV.Communication.LoRaProto *-- USVProto.Waypoint
+USV.Communication.LoRaProto --> USVProto
+
+USVProto.StateMessage *-- USVProto.StateMessage_Manual
+USVProto.StateMessage *-- USVProto.StateMessage_State
+USVProto.StateMessage_Manual *-- USVProto.StateMessage_Manual_State
+USVProto.WaypointsMessage *-- USVProto.Waypoint
+
+@enduml

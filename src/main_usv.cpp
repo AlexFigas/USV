@@ -10,11 +10,11 @@
 GPS_BN880 gps;
 IMU_ICM_20948 imu;
 
-Expander expander(0x40);                                                // Default I2C address for the expander
-ThrusterController leftController(14, 1000, 2000, 1500, 50, "left");    // Pin, min, max, neutral, fq
-ThrusterController rightController(15, 1000, 2000, 1500, 50, "right");  // Pin, min, max, neutral, fq
-Led yellow(expander, 7);                                                // Manual
-Led green(expander, 11);                                                // Automatic
+Expander expander(0x40);                                       // Default I2C address for the expander
+ThrusterController leftController(14, 1000, 2000, 1500, 50);   // Pin, min, max, neutral, fq
+ThrusterController rightController(15, 1000, 2000, 1500, 50);  // Pin, min, max, neutral, fq
+Led yellow(expander, 7);                                       // Manual
+Led green(expander, 11);                                       // Automatic
 // Led red(expander, 3); // Error
 USV usv = USV(expander, leftController, rightController, green, yellow);
 
@@ -40,7 +40,7 @@ void setup()
     // imu.enableInfo();
 
     usv.getLoRaProto().setup();
-    // lora.enableDebug();
+    // usv.getLoRaProto().enableDebug();
 
     display.setup();
 
@@ -52,7 +52,7 @@ void loop()
     gps.loop();
     imu.loop();
 
-    unsigned long currentMillis = millis();  // Get the current time
+    unsigned long currentMillis = millis();
 
     usv.getLoRaProto().receive();
 
