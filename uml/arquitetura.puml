@@ -1,21 +1,28 @@
 @startuml
+
 skinparam rectangle {
   BackgroundColor<<sensor>> LightBlue
   BackgroundColor<<actuator>> LightGreen
   BackgroundColor<<comm>> LightYellow
 }
-skinparam Linetype ortho
+' skinparam Linetype ortho
 
-rectangle "MC" as mc
+rectangle "Microcontrolador" as mc
 rectangle "LoRa" as lora <<comm>>
 rectangle "GPS" as gps <<sensor>>
 rectangle "IMU" as imu <<sensor>>
 rectangle "PWM" as pwm
+rectangle "Motor 1" as Motor1 <<actuator>>
+rectangle "Motor N" as MotorN <<actuator>>
 
-mc - gps
-mc - imu
-mc - pwm
+mc -- gps
+mc -- imu
+mc -- pwm
 mc -down- lora
+
+pwm --> Motor1
+pwm --> MotorN
+Motor1 .right. MotorN
 
 actor usr as "User"
 lora -[dashed]-> usr : LoRa
