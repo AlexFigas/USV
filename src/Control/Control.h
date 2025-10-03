@@ -50,7 +50,6 @@ class Control
     Led& automaticLed;
     Led& manualLed;
 
-    /// @todo if we have time replace with StateStruct
     StateMessage_State state = StateMessage_State_MANUAL;
     StateMessage_Manual_State manualState = StateMessage_Manual_State_NONE;
 

@@ -20,8 +20,6 @@ USV usv = USV(expander, leftController, rightController, green, yellow);
 
 Display display;
 
-/// @todo put all strings with an F so they are stored in flash
-
 unsigned long lastSendTime = 0;        // Store the last time "Hello, World!" was sent
 const unsigned long interval = 10000;  // 1 second interval (in milliseconds)
 

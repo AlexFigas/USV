@@ -22,7 +22,7 @@ class IMU_ICM_20948
     IMU_ICM_20948();
     IMU_ICM_20948(int8_t sdaPin, int8_t sclPin);
 
-    void setup();
+    void setup(uint8_t address = 0); 
     void loop();
     void enableDebug();
     void enableInfo();

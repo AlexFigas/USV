@@ -4,14 +4,13 @@ IMU_ICM_20948::IMU_ICM_20948() : IMU_ICM_20948(21, 22) {}
 
 IMU_ICM_20948::IMU_ICM_20948(int8_t sdaPin, int8_t sclPin) : SDA_PIN(sdaPin), SCL_PIN(sclPin) {}
 
-void IMU_ICM_20948::setup()
+void IMU_ICM_20948::setup(uint8_t address)
 {
     Serial.begin(115200);
     Wire.begin(SDA_PIN, SCL_PIN);
     Wire.setClock(400000);
 
-    /// @todo Add a way to change the I2C address (0 means 0x68, 1 means 0x69)
-    while (imu.begin(Wire, 0) != ICM_20948_Stat_Ok)
+    while (imu.begin(Wire, address) != ICM_20948_Stat_Ok)
     {
         Serial.print(F("IMU initialization failed: "));
         Serial.println(imu.statusString());

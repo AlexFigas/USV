@@ -96,8 +96,6 @@ void GPSData::update(TinyGPSPlus& gps)
 
 void GPSData::print()
 {
-    /// @todo Should we print the header every time?
-    /// @todo add headerPrinted to enable debug
     static bool headerPrinted = false;
 
     if (!headerPrinted)

@@ -1,3 +1,4 @@
 [submodule "lib/Didactic-Robot-Project"]
 	path = lib/Didactic-Robot-Project
 	url = https://github.com/AlexFigas/Didactic-Robot-Project.git
+	branch = changes-needed-for-usv-project
