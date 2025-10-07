@@ -70,17 +70,12 @@ To get started with this project, you need an **Arduino development environment*
    * https://code.visualstudio.com/  
    * https://platformio.org/  
 
-2. Install the required libraries:  
-   * [TinyGPSPlus](https://github.com/mikalhart/TinyGPSPlus)  
-   * [LoRa](https://github.com/sandeepmistry/arduino-LoRa)  
-   * [Adafruit SSD1306](https://github.com/adafruit/Adafruit_SSD1306)  
-
-3. Clone the repository:  
+2. Clone the repository:  
    ```sh
-   git clone https://github.com/your-username/usv-thesis.git
+   git clone https://github.com/AlexFigas/USV.git
    ```
 
-4. Open the project in PlatformIO and build/upload the firmware to the ESP32.
+3. Open the project in PlatformIO and build/upload the firmware to the ESP32.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
