@@ -59,13 +59,6 @@ StateMessage_State Control::getState() const
 
 void Control::update(GPSData& gps, const IMUData& imu)
 {
-    // If all waypoints reached, stop and exit
-    if (currentWaypoint >= waypoints.size())
-    {
-        movement.stop();
-        return;
-    }
-
     // Compute navigation data
     distanceToWaypoint = computeDistance(gps, waypoints[currentWaypoint]);
     bearingToWaypoint = computeBearing(gps, waypoints[currentWaypoint]);
@@ -144,7 +137,7 @@ void Control::setCourse(int bearingError)
     }
     else
     {
-        movement.stop();
+        movement.front(100, 0);
     }
 }
 
