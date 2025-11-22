@@ -122,6 +122,7 @@ Video demonstration of the USV in both **automatic** and **manual** modes:
 The full Master’s Thesis report is available in PDF.  
 
 * [Download the report here](https://github.com/AlexFigas/USV-thesis/blob/master/TFM.pdf)
+* [Download the defense presentation beamer here](https://github.com/AlexFigas/USV-thesis-beamer/blob/master/main.pdf)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
