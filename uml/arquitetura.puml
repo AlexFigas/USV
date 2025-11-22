@@ -1,30 +1,32 @@
 @startuml
-
 skinparam rectangle {
   BackgroundColor<<sensor>> LightBlue
   BackgroundColor<<actuator>> LightGreen
   BackgroundColor<<comm>> LightYellow
 }
-' skinparam Linetype ortho
 
 rectangle "Microcontrolador" as mc
 rectangle "LoRa" as lora <<comm>>
 rectangle "GPS" as gps <<sensor>>
 rectangle "IMU" as imu <<sensor>>
 rectangle "PWM" as pwm
-rectangle "Motor 1" as Motor1 <<actuator>>
-rectangle "Motor N" as MotorN <<actuator>>
+rectangle "Motor 1" as M1 <<actuator>>
+rectangle "Motor N" as Mn <<actuator>>
 
+' MC ligado ao bus
 mc -- gps
 mc -- imu
 mc -- pwm
-mc -down- lora
+mc -- lora
+gps -[dashed]right- imu
+lora -right[hidden]- gps
 
-pwm --> Motor1
-pwm --> MotorN
-Motor1 .right. MotorN
+' Motores ligados ao PWM
+pwm -down-> M1
+M1 -[dashed]right- Mn
+pwm -down-> Mn
 
+' Utilizador via LoRa
 actor usr as "User"
-lora -[dashed]-> usr : LoRa
-
+lora <-[dashed]-> usr : LoRa
 @enduml
